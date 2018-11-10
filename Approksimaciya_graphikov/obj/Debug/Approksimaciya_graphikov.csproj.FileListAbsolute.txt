@@ -1,0 +1,52 @@
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe.config
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.pdb
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csprojResolveAssemblyReference.cache
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Form1.resources
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Properties.Resources.resources
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csproj.GenerateResource.Cache
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.exe
+c:\users\wv\documents\visual studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.pdb
+C:\Users\WV\Documents\Visual Studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.dll
+C:\Users\WV\Documents\Visual Studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\WV\Documents\Visual Studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.xml
+C:\Users\WV\Documents\Visual Studio 2017\Projects\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe.config
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.exe
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.pdb
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.pdb
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.dll
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.xml
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csprojResolveAssemblyReference.cache
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Form1.resources
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Properties.Resources.resources
+C:\Users\Lenovo\Desktop\Approksimaciya_graphikov\Approksimaciya_graphikov\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csproj.GenerateResource.Cache
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe.config
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.exe
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.pdb
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.pdb
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\bin\Debug\EntityFramework.dll
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\bin\Debug\EntityFramework.xml
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csprojResolveAssemblyReference.cache
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Form1.resources
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Properties.Resources.resources
+C:\Users\Чобан\Desktop\Рефлектограмма\reflectoC#\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csproj.GenerateResource.Cache
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe.config
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.exe
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.pdb
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.exe
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\bin\Debug\Approksimaciya_graphikov.pdb
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\bin\Debug\EntityFramework.dll
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\bin\Debug\EntityFramework.xml
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csprojResolveAssemblyReference.cache
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Form1.resources
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.Properties.Resources.resources
+C:\Users\Чобан\Desktop\Рефлектограмма\ref\Approksimaciya_graphikov\obj\Debug\Approksimaciya_graphikov.csproj.GenerateResource.Cache
