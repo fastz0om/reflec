@@ -194,6 +194,7 @@ namespace Approksimaciya_graphikov
                 pictureBox2.Image = output;
                 //textBox1.Text = ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x00FF0000)/256/256).ToString() + " " + ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x0000FF00)/256).ToString() + " " + ((UInt32)(input.GetPixel(500, 500).ToArgb()) & 0x000000FF).ToString();
             }
+            textBox1.Clear();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -442,7 +443,7 @@ namespace Approksimaciya_graphikov
                 myChart.Visible = true;
                 myChart.Parent = this;
                 myChart.CreateControl();
-                // myChart.BackColor = Color.Green;
+
                 charts.Add(myChart);
                 myChart.Series.Add(new Series());
                 // myChart.Series[0].Points.Clear();
@@ -477,7 +478,7 @@ namespace Approksimaciya_graphikov
                         temp = 1;
                         koordinaty_graphika[j] = 140 - i;
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
-                        //    textBox1.Text = textBox1.Text + (koordinaty_graphika[j]).ToString() + ' ';
+                            textBox1.Text = textBox1.Text + (koordinaty_graphika[j]).ToString() + ' ';
                         break;
                     }
                 }
@@ -503,6 +504,7 @@ namespace Approksimaciya_graphikov
                     // if ((G == 0) && (temp == 0))
                     {
                         koordinaty_graphika[j] = 140 - i;
+                        textBox1.Text = textBox1.Text + (koordinaty_graphika[j]).ToString() + ' ';
                         //  koordinaty_graphika[j] = i;
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
                         break;
