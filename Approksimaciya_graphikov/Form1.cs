@@ -49,7 +49,7 @@ namespace Approksimaciya_graphikov
 
         public int[] mk200a = new int[250];
 
-
+        public List<Point> tempLocationGrapf = new List<Point>();
 
 
 
@@ -233,23 +233,24 @@ namespace Approksimaciya_graphikov
             chart1.Series[0].Points.Clear();
             Bitmap input = new Bitmap(pictureBox2.Image);
             bool isBlack = false;
+
             // получаем (свободный пиксель, чтобы определить цвет фона графика
             UInt32 pixel = (UInt32)(input.GetPixel(0, input.Height - 1).ToArgb());
-            // получаем компоненты цветов пикселя
-            float R = (float)((pixel & 0x00FF0000) >> 16); // красный
-            float G = (float)((pixel & 0x0000FF00) >> 8); // зеленый
-            float B = (float)(pixel & 0x000000FF); // синий
+            float G = (float)((pixel & 0x0000FF00) >> 8); // зеленый  
+
             //если цвет свободного пикселя чёрный, то G=0, иначе G=255
             if (G == 0)
             {
                 isBlack = true;
             }
+
             //Проверка: чёрный или нет? (см. методы ниже, рядом с поиском кореляции)
             if (isBlack)
             {
                 grapfBlack(input, koordinaty_graphika);
             }
             else grapfWhite(input, koordinaty_graphika);
+
             ///// Тут начинается логика
             koordinaty_graphika[0] = koordinaty_graphika[1];
             //chart1.Series[0].Points.Clear();
@@ -269,12 +270,19 @@ namespace Approksimaciya_graphikov
             component = new Component();
             component.setCoordinates(koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
 
+            //Заполнение кооридант
+            for (int i = 0; i < charts.Count; i++)
+            {
+                tempLocationGrapf.Add(charts[i].Location);
+            }
+
             List<double> correlationCoef = new List<double>();
             for (int i = 0; i < charts.Count; i++)
             {
                 correlationCoef.Add(findCorrelation(koordinaty_graphika, chartsCoordinates[i].ToArray()));
             }
-            //Метод который красит графики (см. ниже)
+
+            //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
             coloringGraphs(correlationCoef);
 
             /* ГОВНОКОД
@@ -409,7 +417,6 @@ namespace Approksimaciya_graphikov
         {
             //Перегруженная функция , выполняется каждый раз, когда обновляется форма примерно раз в секунду, поэтому снизу q==0, чтобы выполнилось 1 раз
             base.OnPaint(e);
-
             if (q == 0)
             {
                 createGrafics();
@@ -443,7 +450,6 @@ namespace Approksimaciya_graphikov
                 myChart.Visible = true;
                 myChart.Parent = this;
                 myChart.CreateControl();
-
                 charts.Add(myChart);
                 myChart.Series.Add(new Series());
                 // myChart.Series[0].Points.Clear();
@@ -459,6 +465,7 @@ namespace Approksimaciya_graphikov
                 }
                 chartsCoordinates.Add(coordinates);
             }
+
         }
 
         private int[] grapfBlack(Bitmap input, int[] koordinaty_graphika)
@@ -478,7 +485,7 @@ namespace Approksimaciya_graphikov
                         temp = 1;
                         koordinaty_graphika[j] = 140 - i;
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
-                            textBox1.Text = textBox1.Text + (koordinaty_graphika[j]).ToString() + ' ';
+                        textBox1.Text = textBox1.Text + (koordinaty_graphika[j]).ToString() + ' ';
                         break;
                     }
                 }
@@ -552,10 +559,12 @@ namespace Approksimaciya_graphikov
 
         private void coloringGraphs(List<double> correlationCoef)
         {
-            //   int[] firstThreeMax = new int[3];   //массив позиций с максимальными кореляциями в порядке убывания
-            double[] tempCorrelation = new double[correlationCoef.Count]; //временный массив кореляций с которым работаем
-            bool[] checkBoolean = new bool[] { false, false, false, false }; //Была ли записана корреляция? (можно сделать через notNull в массиве firstThreeMax)
 
+            int[] indexDescending = new int[correlationCoef.Count];   //массив индексов в порядке убывания коэффициента корреляции
+            double[] tempCorrelation = new double[correlationCoef.Count]; //временный массив кореляций с которым работаем
+            bool[] checkBoolean = new bool[correlationCoef.Count]; //массив для проверки: Был ли уже записан номер графика в нужный индекс?
+
+            //Запись массива коэффициентов кореляции во временный массив
             for (int i = 0; i < correlationCoef.Count; i++)
             {
                 tempCorrelation[i] = correlationCoef[i];
@@ -563,40 +572,74 @@ namespace Approksimaciya_graphikov
             Array.Sort(tempCorrelation);
             Array.Reverse(tempCorrelation);
 
-            for (int i = 0; i < correlationCoef.Count; i++)
-            {
-                if (correlationCoef[i] == tempCorrelation[0] && !checkBoolean[0])
-                {
-                    charts[i].BackColor = Color.Green;
-                    checkBoolean[0] = true;
-                    //     firstThreeMax[0] = i;
-                }
-                else if (correlationCoef[i] == tempCorrelation[1] && !checkBoolean[1])
-                {
-                    charts[i].BackColor = Color.Orange;
-                    checkBoolean[1] = true;
-                    //  firstThreeMax[1] = i;
-                }
-                else if (correlationCoef[i] == tempCorrelation[2] && !checkBoolean[2])
-                {
-                    checkBoolean[2] = true;
-                    charts[i].BackColor = Color.Orange;
-                    //firstThreeMax[2] = i;
-                }
-                else charts[i].BackColor = Color.Red;
-            }
-            //for (int i = 0; i < charts.Count; i++)
-            //{
-            //  if (i == firstThreeMax[0])
-            //{
-            //  charts[i].BackColor = Color.Green;
-            //}
-            //else if (i == firstThreeMax[1] | i == firstThreeMax[2])
-            //{
-            //  charts[i].BackColor = Color.Orange;
-            //}
-            //else charts[i].BackColor = Color.Red;
+            //       for (int i = 0; i < correlationCoef.Count; i++)
+            //       {
+            //           if (correlationCoef[i] == tempCorrelation[0] && !checkBoolean[0])
+            //          {
+            //             charts[i].BackColor = Color.Green;
+            //               checkBoolean[0] = true;
+            //          //           firstThreeMax[0] = i;
             //           }
+            //            else if (correlationCoef[i] == tempCorrelation[1] && !checkBoolean[1])
+            //            {
+            //                 charts[i].BackColor = Color.Orange;
+            //               checkBoolean[1] = true;
+            //        //        firstThreeMax[1] = i;
+            //          }
+            //          else if (correlationCoef[i] == tempCorrelation[2] && !checkBoolean[2])
+            //         {
+            //             checkBoolean[2] = true;
+            //             charts[i].BackColor = Color.Orange;
+            //             //firstThreeMax[2] = i;
+            //       }
+            //         else charts[i].BackColor = Color.Red;
+            //  }
+
+            //Ищет индексы графиков с максимальной кореляцией в порядке убывания
+            for (int i = 0; i < tempCorrelation.Length; i++)
+            {
+                for (int j = 0; j < correlationCoef.Count; j++)
+                {
+                    if (tempCorrelation[i] == correlationCoef[j] && checkBoolean[i] == false)
+                    {
+                        indexDescending[i] = j;
+                        checkBoolean[i] = true;
+                    }
+                }
+            }
+
+            //Алгоритм покраски графиков
+            charts[indexDescending[0]].BackColor = Color.Green;
+            charts[indexDescending[1]].BackColor = Color.Orange;
+            charts[indexDescending[2]].BackColor = Color.Orange;
+            for (int i = 3; i < indexDescending.Length; i++)
+            {
+                charts[indexDescending[i]].BackColor = Color.Red;
+            }
+            //      for (int i = 0; i < charts.Count; i++)
+            //     {
+            //          if (i == indexDescending[0])
+            //         {
+            //              charts[i].BackColor = Color.Green;
+            //         }
+            //         else if (i == indexDescending[1] | i == indexDescending[2])
+            //         {
+            //             charts[i].BackColor = Color.Orange;
+            //         }
+            //         else charts[i].BackColor = Color.Red;
+            //      }
+
+            //Меняет местами графики в порядке убывания кореляции
+            for (int i = 0; i < charts.Count; i++)
+            {
+                for (int j = 0; j < charts.Count; j++)
+                {
+                    if (i == indexDescending[j])
+                    {
+                        charts[i].Location = tempLocationGrapf[j];
+                    }
+                }
+            }
         }
         private void button5_Click(object sender, EventArgs e)
         {
