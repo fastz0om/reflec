@@ -44,7 +44,11 @@ namespace Approksimaciya_graphikov
         public int[] nz_g655_3 = new int[250];
         public int[] panda = new int[250];
         private int q = 0;
-
+        //Разрешения монитора
+        public int heightMonitor;
+        public int widhtMonitor;
+        //Количество графиков, которое будет помещаться в одну строку монитора
+        public int nubmerOfGrapf;
 
 
         public int[] mk200a = new int[250];
@@ -233,10 +237,13 @@ namespace Approksimaciya_graphikov
             chart1.Series[0].Points.Clear();
             Bitmap input = new Bitmap(pictureBox2.Image);
             bool isBlack = false;
-
             // получаем (свободный пиксель, чтобы определить цвет фона графика
             UInt32 pixel = (UInt32)(input.GetPixel(0, input.Height - 1).ToArgb());
             float G = (float)((pixel & 0x0000FF00) >> 8); // зеленый  
+
+            //Перелистывает скролл в начальное положение (необходимо, чтобы в панели графики располагались с начала координат, а не с середины)
+            panel1.VerticalScroll.Value = panel1.VerticalScroll.Minimum;
+
 
             //если цвет свободного пикселя чёрный, то G=0, иначе G=255
             if (G == 0)
@@ -270,11 +277,11 @@ namespace Approksimaciya_graphikov
             component = new Component();
             component.setCoordinates(koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
 
-            //Заполнение кооридант
-            for (int i = 0; i < charts.Count; i++)
-            {
-                tempLocationGrapf.Add(charts[i].Location);
-            }
+            //  //Заполнение кооридант
+            //      for (int i = 0; i < charts.Count; i++)
+            //      {
+            //          tempLocationGrapf.Add(charts[i].Location);
+            //       }
 
             List<double> correlationCoef = new List<double>();
             for (int i = 0; i < charts.Count; i++)
@@ -431,16 +438,22 @@ namespace Approksimaciya_graphikov
             int graficsCount = (data.data.Count);
             int shiftX = 0;
             int shiftY = 0;
-            // Ниже логика отрисовки графиков
+
+            nubmerOfGrapf = widhtMonitor / 300;
+            panel1.Height = 2 * 190 + 10;
+            panel1.Width = nubmerOfGrapf * 310 + 10;
+
             for (int i = 0; i < graficsCount; i++)
             {
-                if (i % 4 == 0 && i != 0)
+                if (i % nubmerOfGrapf == 0 && i != 0)
                 {
                     shiftX += 190;
                     shiftY = 0;
                 }
-                Point startLocation = new Point(16 + shiftY, 388 + shiftX); // 16 388
+                //  Point startLocation = new Point(16 + shiftY, 388 + shiftX); // 16 388
+                Point startLocation = new Point(shiftY, shiftX); // 16 388
                 shiftY += 310;
+
                 ChartArea chartArea = new ChartArea();
                 Chart myChart = new Chart();
                 chartArea.Position = new ElementPosition(0, 0, 100, 100);
@@ -455,7 +468,7 @@ namespace Approksimaciya_graphikov
                 // myChart.Series[0].Points.Clear();
                 myChart.Series[0].Enabled = true;
                 myChart.Enabled = true;
-
+                panel1.Controls.Add(myChart);
                 List<int> coordinates = new List<int>();
                 for (int j = 0; j < 250; j++)
                 {
@@ -464,6 +477,12 @@ namespace Approksimaciya_graphikov
                     // data экземплял класса, закруженного из файла при запуске -- функция Deserialize()
                 }
                 chartsCoordinates.Add(coordinates);
+            }
+
+            //Заполнение кооридант
+            for (int i = 0; i < charts.Count; i++)
+            {
+                tempLocationGrapf.Add(charts[i].Location);
             }
 
         }
@@ -641,6 +660,7 @@ namespace Approksimaciya_graphikov
                 }
             }
         }
+
         private void button5_Click(object sender, EventArgs e)
         {
             this.data.addComponent(component); // Кнопка добавить
@@ -671,8 +691,12 @@ namespace Approksimaciya_graphikov
             }
         }
 
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.Size = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
+            heightMonitor = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height;
+            widhtMonitor = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width;
 
 
             //  this.Width = SystemInformation.PrimaryMonitorSize.Width / 3;
@@ -1056,6 +1080,36 @@ namespace Approksimaciya_graphikov
         }
 
         private void chart15_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+
+        }
+
+        private void toolTip1_Popup(object sender, PopupEventArgs e)
+        {
+
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolTip1_Popup_1(object sender, PopupEventArgs e)
+        {
+
+        }
+
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
 
         }
