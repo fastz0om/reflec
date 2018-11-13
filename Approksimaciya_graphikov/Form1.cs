@@ -441,7 +441,7 @@ namespace Approksimaciya_graphikov
 
             nubmerOfGrapf = widhtMonitor / 300;
             panel1.Height = 2 * 190 + 10;
-            panel1.Width = nubmerOfGrapf * 310 + 10;
+            panel1.Width = nubmerOfGrapf * 310;
 
             for (int i = 0; i < graficsCount; i++)
             {
@@ -628,12 +628,22 @@ namespace Approksimaciya_graphikov
             }
 
             //Алгоритм покраски графиков
-            charts[indexDescending[0]].BackColor = Color.Green;
-            charts[indexDescending[1]].BackColor = Color.Orange;
-            charts[indexDescending[2]].BackColor = Color.Orange;
-            for (int i = 3; i < indexDescending.Length; i++)
+
+
+            //charts[indexDescending[0]].BackColor = Color.Green;
+            //charts[indexDescending[1]].BackColor = Color.Orange;
+          //  charts[indexDescending[2]].BackColor = Color.Orange;
+            for (int i = 0; i < indexDescending.Length; i++)
             {
-                charts[indexDescending[i]].BackColor = Color.Red;
+                if (i == 0)
+                {
+                    charts[indexDescending[i]].BackColor = Color.Green;
+                }
+                else if (i > 0 && i < 3)
+                {
+                    charts[indexDescending[i]].BackColor = Color.Orange;
+                }
+                else charts[indexDescending[i]].BackColor = Color.Red;
             }
             //      for (int i = 0; i < charts.Count; i++)
             //     {
@@ -663,7 +673,19 @@ namespace Approksimaciya_graphikov
 
         private void button5_Click(object sender, EventArgs e)
         {
+            //   bool checkGrapf = false;
+            //   for (int i = 0; i < charts.Count; i++)
+            //   {
+            //       if (component.Equals(charts[i]))
+            //       {
+            //           checkGrapf = true;
+            //     }
+            //   }
+            //   if (!checkGrapf)
+            //   {
             this.data.addComponent(component); // Кнопка добавить
+            //   }
+            //   else textBox1.Text = "we";
         }
 
         private void button6_Click(object sender, EventArgs e) // Кнопка серилизовать
@@ -694,7 +716,7 @@ namespace Approksimaciya_graphikov
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Size = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
+            // this.Size = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
             heightMonitor = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height;
             widhtMonitor = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width;
 
