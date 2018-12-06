@@ -130,20 +130,7 @@ namespace Approksimaciya_graphikov
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
+            ///ВЫрезаем график -->
             if (pictureBox1.Image != null) // если изображение в pictureBox1 имеется
             {
                 // создаём Bitmap из изображения, находящегося в pictureBox1
@@ -174,6 +161,21 @@ namespace Approksimaciya_graphikov
                 //textBox1.Text = ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x00FF0000)/256/256).ToString() + " " + ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x0000FF00)/256).ToString() + " " + ((UInt32)(input.GetPixel(500, 500).ToArgb()) & 0x000000FF).ToString();
             }
             textBox1.Clear();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -538,7 +540,14 @@ namespace Approksimaciya_graphikov
         {
 
             this._data.addComponent(_component); // Кнопка добавить
-
+            //////////
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (FileStream fs = new FileStream("./data.dat", FileMode.OpenOrCreate))
+            {
+                formatter.Serialize(fs, this._data);
+            }
+            this._firstStart = true;
+            /////////////////
         }
 
         private void button6_Click(object sender, EventArgs e) // Кнопка серилизовать
@@ -572,10 +581,12 @@ namespace Approksimaciya_graphikov
             _heightMonitor = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height;
             _widhtMonitor = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width;
 
-
-
         }
 
+        private void Form1_Close(object sender, EventArgs e)
+        { 
+        
+        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -613,6 +624,21 @@ namespace Approksimaciya_graphikov
         }
 
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
         {
 
         }
