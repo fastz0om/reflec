@@ -25,7 +25,8 @@ namespace Approksimaciya_graphikov
         private Component _component;
         private Data _data = new Data();
         private List<Chart> _charts = new List<Chart>();
-        private List<List<double>> _chartsCoordinates = new List<List<double>>();
+        private List<List<double>> _chartsCoordinates_Y = new List<List<double>>();
+        private List<List<double>> _chartsCoordinates_X = new List<List<double>>();
         private double[] _koordinaty_graphika = new double[250];
         private int[,] _koordinaty_graphika_new = new int[250, 250];
         private int _temp = 0;
@@ -88,14 +89,17 @@ namespace Approksimaciya_graphikov
                 myChart.Series[0].Enabled = true;
                 myChart.Enabled = true;
                 panel1.Controls.Add(myChart);
-                List<double> coordinates = new List<double>();
+                List<double> coordinatesY = new List<double>();
+                List<double> coordinatesX = new List<double>();
                 for (int j = 0; j < 250; j++)
                 {
-                    myChart.Series[0].Points.AddXY(j, _data.data[i].coordinatesY[j]);
-                    coordinates.Add(_data.data[i].coordinatesY[j]);
+                    myChart.Series[0].Points.AddXY(_data.data[i].coordinatesX[j], _data.data[i].coordinatesY[j]);
+                    coordinatesY.Add(_data.data[i].coordinatesY[j]);
+                    coordinatesX.Add(_data.data[i].coordinatesX[j]);
                     // data экземплял класса, закруженного из файла при запуске -- функция Deserialize()
                 }
-                _chartsCoordinates.Add(coordinates);
+                _chartsCoordinates_Y.Add(coordinatesY);
+                _chartsCoordinates_X.Add(coordinatesX);
             }
 
             //Заполнение кооридант
@@ -239,10 +243,10 @@ namespace Approksimaciya_graphikov
 
             if (!textBox4.Text.Equals(""))
             {
-                
-                
-                    stepY = Convert.ToDouble(textBox4.Text) / max;
-                
+
+
+                stepY = Convert.ToDouble(textBox4.Text) / max;
+
             }
 
 
@@ -266,15 +270,24 @@ namespace Approksimaciya_graphikov
             _component = new Component();
             _component.setCoordinates(frequencyCoordinates, _koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
 
-            List<double> correlationCoef = new List<double>();
+            List<double> correlationCoef_Y = new List<double>();
+            List<double> correlationCoef_X = new List<double>();
+
             for (int i = 0; i < _charts.Count; i++)
             {
-                correlationCoef.Add(findCorrelation(_koordinaty_graphika, _chartsCoordinates[i].ToArray()));
+                correlationCoef_Y.Add(findCorrelation(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
+                correlationCoef_X.Add(findCorrelation(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
             }
+            List<double> correlationCoefAverage = new List<double>();
             
-            //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
-            coloringGraphs(correlationCoef);
-            
+            for (int i = 0; i < correlationCoef_X.Count; i++)
+            {
+                correlationCoefAverage.Add(correlationCoef_Y[i]);
+            }
+                //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
+
+                coloringGraphs(correlationCoefAverage);
+
 
         }
 
@@ -381,17 +394,17 @@ namespace Approksimaciya_graphikov
             return correlationNumerator;
         }
 
-        private void coloringGraphs(List<double> correlationCoef)
+        private void coloringGraphs(List<double> correlationCoefY)
         {
 
-            int[] indexDescending = new int[correlationCoef.Count];   //массив индексов в порядке убывания коэффициента корреляции
-            double[] tempCorrelation = new double[correlationCoef.Count]; //временный массив кореляций с которым работаем
-            bool[] checkBoolean = new bool[correlationCoef.Count]; //массив для проверки: Был ли уже записан номер графика в нужный индекс?
+            int[] indexDescending = new int[correlationCoefY.Count];   //массив индексов в порядке убывания коэффициента корреляции
+            double[] tempCorrelation = new double[correlationCoefY.Count]; //временный массив кореляций с которым работаем
+            bool[] checkBoolean = new bool[correlationCoefY.Count]; //массив для проверки: Был ли уже записан номер графика в нужный индекс?
 
             //Запись массива коэффициентов кореляции во временный массив
-            for (int i = 0; i < correlationCoef.Count; i++)
+            for (int i = 0; i < correlationCoefY.Count; i++)
             {
-                tempCorrelation[i] = correlationCoef[i];
+                tempCorrelation[i] = correlationCoefY[i];
             }
             Array.Sort(tempCorrelation);
             Array.Reverse(tempCorrelation);
@@ -400,9 +413,9 @@ namespace Approksimaciya_graphikov
             //Ищет индексы графиков с максимальной кореляцией в порядке убывания
             for (int i = 0; i < tempCorrelation.Length; i++)
             {
-                for (int j = 0; j < correlationCoef.Count; j++)
+                for (int j = 0; j < correlationCoefY.Count; j++)
                 {
-                    if (tempCorrelation[i] == correlationCoef[j] && checkBoolean[i] == false)
+                    if (tempCorrelation[i] == correlationCoefY[j] && checkBoolean[i] == false)
                     {
                         indexDescending[i] = j;
                         checkBoolean[i] = true;
@@ -477,7 +490,7 @@ namespace Approksimaciya_graphikov
             _widhtMonitor = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width;
 
 
-            
+
         }
 
 
