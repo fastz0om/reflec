@@ -273,20 +273,37 @@ namespace Approksimaciya_graphikov
             List<double> correlationCoef_Y = new List<double>();
             List<double> correlationCoef_X = new List<double>();
 
+            List<double> rPirsonCorel_Y = new List<double>();
+            List<double> rPirsonCorel_X = new List<double>();
+
+
             for (int i = 0; i < _charts.Count; i++)
             {
-                correlationCoef_Y.Add(findCorrelation(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
-                correlationCoef_X.Add(findCorrelation(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
+                rPirsonCorel_Y.Add(rPirson(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
+                rPirsonCorel_X.Add(rPirson(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
             }
             List<double> correlationCoefAverage = new List<double>();
-            
-            for (int i = 0; i < correlationCoef_X.Count; i++)
-            {
-                correlationCoefAverage.Add(correlationCoef_Y[i]);
-            }
-                //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
 
-                coloringGraphs(correlationCoefAverage);
+            for (int i = 0; i < rPirsonCorel_Y.Count; i++)
+            {
+                correlationCoefAverage.Add(rPirsonCorel_Y[i]);
+            }
+
+
+            //   for (int i = 0; i < _charts.Count; i++)
+            //      {
+            //         correlationCoef_Y.Add(findCorrelation(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
+            //         correlationCoef_X.Add(findCorrelation(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
+            //     }
+            //     List<double> correlationCoefAverage = new List<double>();
+            //     
+            ///      for (int i = 0; i < correlationCoef_X.Count; i++)
+            //      {
+            //          correlationCoefAverage.Add(correlationCoef_Y[i]);
+            //      }
+            //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
+
+            coloringGraphs(correlationCoefAverage);
 
 
         }
@@ -363,6 +380,72 @@ namespace Approksimaciya_graphikov
             }
             return koordinaty_graphika_Y;
         }
+
+        private double rPirson(double[] x, double[] y)
+        {
+            double xAverage = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                xAverage += x[i];
+            }
+            xAverage = xAverage / x.Length;
+
+            double yAverage = 0;
+            for (int i = 0; i < y.Length; i++)
+            {
+                yAverage += y[i];
+            }
+            yAverage = yAverage / y.Length;
+
+            double[] xNumerator = new double[x.Length];
+            double sumXNumerator = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                xNumerator[i] = x[i] - xAverage;
+                sumXNumerator += xNumerator[i];
+            }
+
+            double[] yNumerator = new double[y.Length];
+            double sumYNumerator = 0;
+            for (int i = 0; i < y.Length; i++)
+            {
+                yNumerator[i] = y[i] - yAverage;
+                sumYNumerator += yNumerator[i];
+            }
+
+            double[] squadXNumerator = new double[x.Length];
+            double sumSquadXNumerator = 0;
+
+            for (int i = 0; i < x.Length; i++)
+            {
+                squadXNumerator[i] = Math.Pow(xNumerator[i], 2);
+                sumSquadXNumerator += squadXNumerator[i];
+            }
+
+            double[] squadYNumerator = new double[y.Length];
+            double sumSquadYNumerator = 0;
+
+            for (int i = 0; i < y.Length; i++)
+            {
+                squadYNumerator[i] = Math.Pow(yNumerator[i], 2);
+                sumSquadYNumerator += squadYNumerator[i];
+            }
+
+            double[] xyNum = new double[x.Length];
+            double sumXYNum = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                xyNum[i] = (x[i] - xAverage) * (y[i] - yAverage);
+                sumXYNum += xyNum[i];
+            }
+
+            double sigmaX = Math.Sqrt(sumSquadXNumerator / (x.Length - 1));
+            double sigmaY = Math.Sqrt(sumSquadYNumerator / (y.Length - 1));
+
+            double rPirson = sumXYNum / (sigmaX * sigmaY * (x.Length - 1));
+            return rPirson;
+        }
+
 
         private double findCorrelation(double[] x, double[] y)
         {
