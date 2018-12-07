@@ -27,7 +27,7 @@ namespace Approksimaciya_graphikov
         private List<Chart> _charts = new List<Chart>();
         private List<List<double>> _chartsCoordinates_Y = new List<List<double>>();
         private List<List<double>> _chartsCoordinates_X = new List<List<double>>();
-        private double[] _koordinaty_graphika = new double[250];
+        private double[] _koordinaty_graphika;
         private int[,] _koordinaty_graphika_new = new int[250, 250];
         private int _temp = 0;
         private bool _firstStart = true;
@@ -175,7 +175,7 @@ namespace Approksimaciya_graphikov
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -208,17 +208,17 @@ namespace Approksimaciya_graphikov
 
         private void button4_Click(object sender, EventArgs e) // Аппроксимировать
         {
-
+            _koordinaty_graphika = new double[250];
             chart1.Series[0].Points.Clear();
+
             Bitmap input = new Bitmap(pictureBox2.Image);
             bool isBlack = false;
             // получаем (свободный пиксель, чтобы определить цвет фона графика
-            UInt32 pixel = (UInt32)(input.GetPixel(0, input.Height - 1).ToArgb());
+            UInt32 pixel = (UInt32)(input.GetPixel(1, input.Height - 1).ToArgb());
             float G = (float)((pixel & 0x0000FF00) >> 8); // зеленый  
 
             //Перелистывает скролл в начальное положение (необходимо, чтобы в панели графики располагались с начала координат, а не с середины)
             panel1.VerticalScroll.Value = panel1.VerticalScroll.Minimum;
-
 
             //если цвет свободного пикселя чёрный, то G=0, иначе G=255
             if (G == 0)
@@ -229,11 +229,12 @@ namespace Approksimaciya_graphikov
             //Проверка: чёрный или нет? (см. методы ниже, рядом с поиском кореляции)
             if (isBlack)
             {
-                _koordinaty_graphika = grapfBlack(input);
+                 grapfBlack(input, _koordinaty_graphika);
             }
-            else _koordinaty_graphika = grapfWhite(input);
-
+            else  grapfWhite(input, _koordinaty_graphika);
+            
             ///// Тут начинается логика
+            _koordinaty_graphika[0] = _koordinaty_graphika[1];
             double stepY = 1;
             double max = 0;
             for (int i = 0; i < _koordinaty_graphika.Length; i++)
@@ -245,10 +246,7 @@ namespace Approksimaciya_graphikov
 
             if (!textBox4.Text.Equals(""))
             {
-
-
                 stepY = Convert.ToDouble(textBox4.Text) / max;
-
             }
 
 
@@ -256,7 +254,6 @@ namespace Approksimaciya_graphikov
 
             for (int i = 0; i < input.Width; i++)
             {
-
                 int stepX = 1;
                 if (!textBox3.Text.Equals("") && !textBox2.Text.Equals(""))
                 {
@@ -303,11 +300,9 @@ namespace Approksimaciya_graphikov
             //      {
             //          correlationCoefAverage.Add(correlationCoef_Y[i]);
             //      }
+
             //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
-
             coloringGraphs(correlationCoefAverage);
-
-
         }
 
         private void chart1_Click(object sender, EventArgs e)
@@ -315,11 +310,9 @@ namespace Approksimaciya_graphikov
 
         }
 
-
-
-        private double[] grapfBlack(Bitmap input)
+        private double[] grapfBlack(Bitmap input, double[] _koordinaty_graphika)
         {
-            double[] koordinaty_graphika = new double[250];
+       //     double[] koordinaty_graphika = new double[250];
             for (int j = 0; j < input.Width; j++)
             {
                 for (int i = 0; i < input.Height; i++)
@@ -333,25 +326,26 @@ namespace Approksimaciya_graphikov
                     if ((G == 51) && (_temp == 0) && (j == 0) || (G == 51) && (_temp != 0) && (j != 0))
                     {
                         _temp = 1;
-                        koordinaty_graphika[j] = 140 - i;
+                        _koordinaty_graphika[j] = 140 - i;
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
-                        textBox1.Text = textBox1.Text + (koordinaty_graphika[j]).ToString() + ' ';
+                        textBox1.Text = textBox1.Text + (_koordinaty_graphika[j]).ToString() + ' ';
                         break;
                     }
                 }
             }
 
-            return koordinaty_graphika;
+            return _koordinaty_graphika;
         }
 
-        private double[] grapfWhite(Bitmap input, params int[] frequency)
+        private double[] grapfWhite(Bitmap input, double[] _koordinaty_graphika, params int[] frequency)
         {
+         //   double[] koordinaty_graphika_Y = new double[250];
             int step = 1;
             if (frequency.Length != 0)
             {
                 step = (frequency[1] - frequency[0]) / 250;
             }
-            double[] koordinaty_graphika_Y = new double[250];
+            
             for (int j = 0; j < input.Width; j++)
             {
                 for (int i = input.Height - 1; i > 0; i--)
@@ -366,8 +360,8 @@ namespace Approksimaciya_graphikov
                     if ((G == 0) && (_temp == 0) && (j % 10 != 0))
                     // if ((G == 0) && (temp == 0))
                     {
-                        koordinaty_graphika_Y[j] = input.Height - i;
-                        textBox1.Text = textBox1.Text + (koordinaty_graphika_Y[j]).ToString() + ' ';
+                        _koordinaty_graphika[j] = input.Height - i;
+                        textBox1.Text = textBox1.Text + (_koordinaty_graphika[j]).ToString() + ' ';
                         //  koordinaty_graphika[j] = i;
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
                         break;
@@ -377,10 +371,10 @@ namespace Approksimaciya_graphikov
 
                 if ((j % 10 == 1) && (j > 10))
                 {
-                    koordinaty_graphika_Y[j - 1] = (koordinaty_graphika_Y[j] + koordinaty_graphika_Y[j - 2]) / 2;
+                    _koordinaty_graphika[j - 1] = (_koordinaty_graphika[j] + _koordinaty_graphika[j - 2]) / 2;
                 }
             }
-            return koordinaty_graphika_Y;
+            return _koordinaty_graphika;
         }
 
         private double rPirson(double[] x, double[] y)
@@ -539,13 +533,45 @@ namespace Approksimaciya_graphikov
         private void button5_Click(object sender, EventArgs e)
         {
 
-            this._data.addComponent(_component); // Кнопка добавить
+            bool vo = false; //Такого массива нет  в коллекции.
+            int[] sostoyanie = new int[_charts.Count];  //сколько похожих точек между парой графиков.
+
+            for (int i = 0; i < _charts.Count; i++)
+            {
+                sostoyanie[i] = 0;
+                for (int j = 0; j < _data.data[i].coordinatesY.Count; j++)
+                {
+                    if (_data.data[i].coordinatesY[j] == (_component.coordinatesY[j]))
+                    {
+                        sostoyanie[i]++;
+                    }
+                }
+                if (sostoyanie[i] > 240)
+                {
+                    vo = true;
+                    break;
+                }
+            }
+
+            if (vo)
+            {
+                textBox1.Clear();
+                textBox1.Text = "Такой график уже добавлен в Базу!";
+            }
+            else this._data.addComponent(_component); // Кнопка добавить
+
             //////////
             BinaryFormatter formatter = new BinaryFormatter();
             using (FileStream fs = new FileStream("./data.dat", FileMode.OpenOrCreate))
             {
                 formatter.Serialize(fs, this._data);
-            }
+            }    
+            _tempLocationGrapf.Clear();
+            _charts.Clear();
+            _chartsCoordinates_X.Clear();
+            _chartsCoordinates_Y.Clear();
+            panel1.Controls.Clear();
+            panel1.Refresh();
             this._firstStart = true;
             /////////////////
         }
@@ -584,8 +610,8 @@ namespace Approksimaciya_graphikov
         }
 
         private void Form1_Close(object sender, EventArgs e)
-        { 
-        
+        {
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
