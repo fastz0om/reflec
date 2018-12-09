@@ -105,7 +105,7 @@ namespace Approksimaciya_graphikov
             //Заполнение кооридант
             for (int i = 0; i < _charts.Count; i++)
             {
-                _tempLocationGrapf.Add(_charts[i].Location);
+               _tempLocationGrapf.Add(_charts[i].Location);
             }
 
         }
@@ -208,8 +208,9 @@ namespace Approksimaciya_graphikov
 
         private void button4_Click(object sender, EventArgs e) // Аппроксимировать
         {
-            _koordinaty_graphika = new double[250];
+            _temp = 0;
             chart1.Series[0].Points.Clear();
+            _koordinaty_graphika = new double[250];
 
             Bitmap input = new Bitmap(pictureBox2.Image);
             bool isBlack = false;
@@ -249,7 +250,6 @@ namespace Approksimaciya_graphikov
                 stepY = Convert.ToDouble(textBox4.Text) / max;
             }
 
-
             double[] frequencyCoordinates = new double[250];
 
             for (int i = 0; i < input.Width; i++)
@@ -269,8 +269,8 @@ namespace Approksimaciya_graphikov
             _component = new Component();
             _component.setCoordinates(frequencyCoordinates, _koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
 
-            List<double> correlationCoef_Y = new List<double>();
-            List<double> correlationCoef_X = new List<double>();
+          //  List<double> correlationCoef_Y = new List<double>();
+          //  List<double> correlationCoef_X = new List<double>();
 
             List<double> rPirsonCorel_Y = new List<double>();
             List<double> rPirsonCorel_X = new List<double>();
@@ -281,28 +281,15 @@ namespace Approksimaciya_graphikov
                 rPirsonCorel_Y.Add(rPirson(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
                 rPirsonCorel_X.Add(rPirson(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
             }
-            List<double> correlationCoefAverage = new List<double>();
-
-            for (int i = 0; i < rPirsonCorel_Y.Count; i++)
-            {
-                correlationCoefAverage.Add(rPirsonCorel_Y[i]);
-            }
-
-
-            //   for (int i = 0; i < _charts.Count; i++)
-            //      {
-            //         correlationCoef_Y.Add(findCorrelation(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
-            //         correlationCoef_X.Add(findCorrelation(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
-            //     }
-            //     List<double> correlationCoefAverage = new List<double>();
-            //     
-            ///      for (int i = 0; i < correlationCoef_X.Count; i++)
-            //      {
-            //          correlationCoefAverage.Add(correlationCoef_Y[i]);
-            //      }
+      //      List<double> correlationCoefAverage = new List<double>();
+      //
+      //      for (int i = 0; i < rPirsonCorel_Y.Count; i++)
+      //      {
+      //          correlationCoefAverage.Add(rPirsonCorel_Y[i]);
+      //      }
 
             //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
-            coloringGraphs(correlationCoefAverage);
+            coloringGraphs(rPirsonCorel_Y);
         }
 
         private void chart1_Click(object sender, EventArgs e)
@@ -488,7 +475,6 @@ namespace Approksimaciya_graphikov
             Array.Sort(tempCorrelation);
             Array.Reverse(tempCorrelation);
 
-
             //Ищет индексы графиков с максимальной кореляцией в порядке убывания
             for (int i = 0; i < tempCorrelation.Length; i++)
             {
@@ -503,7 +489,6 @@ namespace Approksimaciya_graphikov
             }
 
             //Алгоритм покраски графиков
-
             for (int i = 0; i < indexDescending.Length; i++)
             {
                 if (i == 0)
@@ -534,7 +519,7 @@ namespace Approksimaciya_graphikov
         {
 
             bool vo = false; //Такого массива нет  в коллекции.
-            int[] sostoyanie = new int[_charts.Count];  //сколько похожих точек между парой графиков.
+            int[] sostoyanie = new int[_charts.Count];  //Сколько похожих точек между парой графиков.
 
             for (int i = 0; i < _charts.Count; i++)
             {
@@ -549,16 +534,22 @@ namespace Approksimaciya_graphikov
                 if (sostoyanie[i] > 240)
                 {
                     vo = true;
+                    textBox1.Clear();
+                    textBox1.Text = "Такой график уже добавлен в Базу!";
                     break;
+                }
+                else if (i == _charts.Count - 1)
+                {
+                    this._data.addComponent(_component); // Кнопка добавить
                 }
             }
 
-            if (vo)
-            {
-                textBox1.Clear();
-                textBox1.Text = "Такой график уже добавлен в Базу!";
-            }
-            else this._data.addComponent(_component); // Кнопка добавить
+         //   if (vo)
+         //   {
+        //        textBox1.Clear();
+        //        textBox1.Text = "Такой график уже добавлен в Базу!";
+        //    }
+       //     else this._data.addComponent(_component); // Кнопка добавить
 
             //////////
             BinaryFormatter formatter = new BinaryFormatter();
@@ -665,6 +656,11 @@ namespace Approksimaciya_graphikov
         }
 
         private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
         {
 
         }
