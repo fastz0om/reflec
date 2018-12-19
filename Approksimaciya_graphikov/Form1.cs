@@ -24,6 +24,7 @@ namespace Approksimaciya_graphikov
 
         private Component _component;
         private Data _data = new Data();
+        private List<Bitmap> bitNumbers = new List<Bitmap>();
         private List<Chart> _charts = new List<Chart>();
         private List<List<double>> _chartsCoordinates_Y = new List<List<double>>();
         private List<List<double>> _chartsCoordinates_X = new List<List<double>>();
@@ -37,7 +38,10 @@ namespace Approksimaciya_graphikov
         //Количество графиков, которое будет помещаться в одну строку монитора
         private int _nubmerOfGrapf;
         private List<Point> _tempLocationGrapf = new List<Point>();
-
+        //Лист пиксельных значений цифр
+        private List<long[]> lonNumbers = new List<long[]>();
+        //Лист пиксельных значений подгруженной цифры
+        long[] tempNumber;
 
 
         protected override void OnPaint(PaintEventArgs e)
@@ -105,13 +109,15 @@ namespace Approksimaciya_graphikov
             //Заполнение кооридант
             for (int i = 0; i < _charts.Count; i++)
             {
-               _tempLocationGrapf.Add(_charts[i].Location);
+                _tempLocationGrapf.Add(_charts[i].Location);
             }
 
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            textBox2.Clear();
+            textBox3.Clear();
             // диалог для выбора файла
             OpenFileDialog ofd = new OpenFileDialog();
             // фильтр форматов файлов
@@ -130,6 +136,16 @@ namespace Approksimaciya_graphikov
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            // loadGrapf();
+            loadingFromFileNumbers();
+            loadNumbers();
+
+
+        }
+
+
+        private void loadGrapf()
+        {
             ///ВЫрезаем график -->
             if (pictureBox1.Image != null) // если изображение в pictureBox1 имеется
             {
@@ -160,8 +176,50 @@ namespace Approksimaciya_graphikov
                 pictureBox2.Image = output;
                 //textBox1.Text = ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x00FF0000)/256/256).ToString() + " " + ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x0000FF00)/256).ToString() + " " + ((UInt32)(input.GetPixel(500, 500).ToArgb()) & 0x000000FF).ToString();
             }
-            textBox1.Clear();
+            //    textBox1.Clear();
         }
+
+
+        private void loadNumbers()
+        {
+
+            ///ВЫрезаем цифру -->
+            if (pictureBox1.Image != null) // если изображение в pictureBox1 имеется
+            {
+                Bitmap input = new Bitmap(pictureBox1.Image);
+                // Начальная частота            
+                //     int j_start = 548, i_start = 69, j_end = 557, i_end = 76;  
+                // Конечная частота
+                //     int j_start = 565, i_start = 69, j_end = 574, i_end = 76;    
+                //Буква t, чтобы понять, что там есть частота
+                // int j_start = 548, i_start = 48, j_end = 557, i_end = 55;
+                //100 - это пустота, означает что 4 цифры
+                //101 - это буква t, означает что это правильная рефлектограмма и дальше будут цифры, иначе вводи цифры руками.
+
+                //    Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
+                //    for (int j = j_start; j < j_end; j++)
+                //        for (int i = i_start; i < i_end; i++)
+                //        {
+                //            UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
+                //             output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
+                //       }
+                //
+                //   bitNumbers.Add(output);
+                // pictureBox2.Image = output;
+
+                //запись цифры в файл
+                //   writeToFileNumbers(output, "2");
+
+
+                if (frequencyCheck(input))
+                {
+                    startFrequancy(input);
+                    stopFrequancy(input);
+                }
+            }
+        }
+
+
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -230,10 +288,10 @@ namespace Approksimaciya_graphikov
             //Проверка: чёрный или нет? (см. методы ниже, рядом с поиском кореляции)
             if (isBlack)
             {
-                 grapfBlack(input, _koordinaty_graphika);
+                grapfBlack(input, _koordinaty_graphika);
             }
-            else  grapfWhite(input, _koordinaty_graphika);
-            
+            else grapfWhite(input, _koordinaty_graphika);
+
             ///// Тут начинается логика
             _koordinaty_graphika[0] = _koordinaty_graphika[1];
             double stepY = 1;
@@ -269,8 +327,8 @@ namespace Approksimaciya_graphikov
             _component = new Component();
             _component.setCoordinates(frequencyCoordinates, _koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
 
-          //  List<double> correlationCoef_Y = new List<double>();
-          //  List<double> correlationCoef_X = new List<double>();
+            //  List<double> correlationCoef_Y = new List<double>();
+            //  List<double> correlationCoef_X = new List<double>();
 
             List<double> rPirsonCorel_Y = new List<double>();
             List<double> rPirsonCorel_X = new List<double>();
@@ -281,12 +339,12 @@ namespace Approksimaciya_graphikov
                 rPirsonCorel_Y.Add(rPirson(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
                 rPirsonCorel_X.Add(rPirson(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
             }
-      //      List<double> correlationCoefAverage = new List<double>();
-      //
-      //      for (int i = 0; i < rPirsonCorel_Y.Count; i++)
-      //      {
-      //          correlationCoefAverage.Add(rPirsonCorel_Y[i]);
-      //      }
+            //      List<double> correlationCoefAverage = new List<double>();
+            //
+            //      for (int i = 0; i < rPirsonCorel_Y.Count; i++)
+            //      {
+            //          correlationCoefAverage.Add(rPirsonCorel_Y[i]);
+            //      }
 
             //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
             coloringGraphs(rPirsonCorel_Y);
@@ -299,7 +357,7 @@ namespace Approksimaciya_graphikov
 
         private double[] grapfBlack(Bitmap input, double[] _koordinaty_graphika)
         {
-       //     double[] koordinaty_graphika = new double[250];
+            //     double[] koordinaty_graphika = new double[250];
             for (int j = 0; j < input.Width; j++)
             {
                 for (int i = 0; i < input.Height; i++)
@@ -326,13 +384,13 @@ namespace Approksimaciya_graphikov
 
         private double[] grapfWhite(Bitmap input, double[] _koordinaty_graphika, params int[] frequency)
         {
-         //   double[] koordinaty_graphika_Y = new double[250];
+            //   double[] koordinaty_graphika_Y = new double[250];
             int step = 1;
             if (frequency.Length != 0)
             {
                 step = (frequency[1] - frequency[0]) / 250;
             }
-            
+
             for (int j = 0; j < input.Width; j++)
             {
                 for (int i = input.Height - 1; i > 0; i--)
@@ -544,19 +602,12 @@ namespace Approksimaciya_graphikov
                 }
             }
 
-         //   if (vo)
-         //   {
-        //        textBox1.Clear();
-        //        textBox1.Text = "Такой график уже добавлен в Базу!";
-        //    }
-       //     else this._data.addComponent(_component); // Кнопка добавить
-
             //////////
             BinaryFormatter formatter = new BinaryFormatter();
             using (FileStream fs = new FileStream("./data.dat", FileMode.OpenOrCreate))
             {
                 formatter.Serialize(fs, this._data);
-            }    
+            }
             _tempLocationGrapf.Clear();
             _charts.Clear();
             _chartsCoordinates_X.Clear();
@@ -577,6 +628,7 @@ namespace Approksimaciya_graphikov
             this._firstStart = true;
         }
 
+
         private void Deserialize()
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -591,6 +643,238 @@ namespace Approksimaciya_graphikov
                 }
             }
         }
+
+        private void loadingFromFileNumbers()
+        {
+            List<string> text1 = new List<string>();
+            //   string text = "";
+
+            using (StreamReader fs = new StreamReader(@"./dataNumbers.txt"))
+            {
+                while (true)
+                {
+                    // Читаем строку из файла во временную переменную.
+                    string temp = fs.ReadLine();
+                    // Если достигнут конец файла, прерываем считывание.
+                    if (temp == null) break;
+                    // Пишем считанную строку в итоговую переменную.
+                    text1.Add(temp);
+                    //               text += temp;
+                }
+            }
+
+            //заполняем лист данными из файла и преобразуем это в массивы long
+            for (int i = 0; i < text1.Count - 1; i++)
+            {
+                string[] str = text1[i].Split(' ');
+                long[] mas = new long[str.Length - 1];
+
+                for (int j = 0; j < str.Length - 1; j++)
+                {
+                    mas[j] = Convert.ToInt64(str[j]);
+                }
+                lonNumbers.Add(mas);
+            }
+        }
+
+
+        //Заполнение массива long пикселями конкретной цифры (каждая цифра классифицируется отдельно)
+        private long[] arrayFill(Bitmap output)
+        {
+            List<long> tempListLong = new List<long>();
+            for (int i = 0; i < output.Width; i++) //ширина
+            {
+                for (int j = 0; j < output.Height; j++) //высота
+                {
+                    tempListLong.Add((UInt32)output.GetPixel(i, j).ToArgb());
+                }
+            }
+            tempNumber = new long[tempListLong.Count];
+
+            for (int i = 0; i < tempListLong.Count; i++)
+            {
+                tempNumber[i] = tempListLong[i];
+            }
+            return tempNumber;
+        }
+
+
+        //Записывает данные о цифрах и прочем говне в файл,  необходимо передать картинку и название цифры или символа в форме числа
+        private void writeToFileNumbers(Bitmap output, string nameNumber)
+        {
+            using (StreamWriter sw = new StreamWriter("./dataNumbers.txt", true, System.Text.Encoding.Default))
+            {
+                sw.Write(nameNumber);
+                sw.Write(" ");
+                for (int i = 0; i < output.Width; i++) //ширина
+                {
+                    for (int j = 0; j < output.Height; j++) //высота
+                    {
+                        sw.Write((UInt32)output.GetPixel(i, j).ToArgb());
+                        sw.Write(" ");
+                    }
+                }
+            }
+        }
+
+        //Проверяем правильная ли эта картинка(присутствуют ли там частоты)
+        private bool frequencyCheck(Bitmap input)
+        {
+            int j_start = 548, i_start = 69, j_end = 557, i_end = 76;
+            Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
+            for (int j = j_start; j < j_end; j++)
+                for (int i = i_start; i < i_end; i++)
+                {
+                    UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
+                    output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
+                }
+            arrayFill(output);
+            int[] sostoyanie = new int[lonNumbers.Count];  //Сколько похожих точек между парой графиков.              
+            for (int i = 0; i < lonNumbers.Count; i++)
+            {
+                sostoyanie[i] = 0;
+                for (int j = 0; j < tempNumber.Length; j++)
+                {
+                    if (lonNumbers[i][j + 1] == tempNumber[j])
+                    {
+                        sostoyanie[i]++;
+                    }
+                }
+                if (sostoyanie[i] == tempNumber.Length)
+                {
+                    return true;
+                    break;
+                }
+
+            }
+            return false;
+        }
+
+        //Написание начальной частоты в текстовое поле
+        private void startFrequancy(Bitmap input)
+        {
+            bool checkFirstEmpt = false;
+            int step = 9;
+            int j_start = 548, i_start = 69, j_end = 557, i_end = 76;
+            for (int k = 0; k < 6; k++)
+            {
+                Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
+                for (int j = j_start; j < j_end; j++)
+                    for (int i = i_start; i < i_end; i++)
+                    {
+                        UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
+                        output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
+                    }
+
+                //   bitNumbers.Add(output);
+                // pictureBox2.Image = output;
+
+                //запись цифры в файл
+                //   writeToFileNumbers(output, "2");
+
+                //добавление данных о пикселях подгруженной цифры в массив long
+                arrayFill(output);
+
+                int[] sostoyanie = new int[lonNumbers.Count];  //Сколько похожих точек между парой графиков.              
+                for (int i = 0; i < lonNumbers.Count; i++)
+                {
+                    sostoyanie[i] = 0;
+                    for (int j = 0; j < tempNumber.Length; j++)
+                    {
+                        if (lonNumbers[i][j + 1] == tempNumber[j])
+                        {
+                            sostoyanie[i]++;
+                        }
+                    }
+                    if (sostoyanie[i] == tempNumber.Length)
+                    {
+                        //Ставим запятую
+                        if (textBox2.TextLength == 1 || (textBox2.TextLength == 0 && checkFirstEmpt == true))
+                        {
+                            textBox2.AppendText(Convert.ToString(lonNumbers[i][0]));
+                            textBox2.AppendText(",");
+                            break;
+                        }
+
+                        //Проверяем пусто или нет (первая цифра в частоте)
+                        if (lonNumbers[i][0] != 100)
+                        {
+                            textBox2.AppendText(Convert.ToString(lonNumbers[i][0]));
+                            break;
+                        }
+                        else
+                        {
+                            checkFirstEmpt = true;
+                            break;
+                        }
+
+                    }
+                }
+                i_start += step;
+                i_end += step;
+            }
+        }
+
+        //Написание конечной частоты в текстовое поле
+        private void stopFrequancy(Bitmap input)
+        {
+            bool checkFirstEmpt = false;
+            int step = 9;
+            int j_start = 565, i_start = 69, j_end = 574, i_end = 76;
+            for (int k = 0; k < 6; k++)
+            {
+                Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
+                for (int j = j_start; j < j_end; j++)
+                    for (int i = i_start; i < i_end; i++)
+                    {
+                        UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
+                        output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
+                    }
+
+                //добавление данных о пикселях подгруженной цифры в массив long
+                arrayFill(output);
+
+                int[] sostoyanie = new int[lonNumbers.Count];  //Сколько похожих точек между парой графиков.              
+                for (int i = 0; i < lonNumbers.Count; i++)
+                {
+                    sostoyanie[i] = 0;
+                    for (int j = 0; j < tempNumber.Length; j++)
+                    {
+                        if (lonNumbers[i][j + 1] == tempNumber[j])
+                        {
+                            sostoyanie[i]++;
+                        }
+                    }
+                    if (sostoyanie[i] == tempNumber.Length)
+                    {
+                        //Ставим запятую
+                        if (textBox3.TextLength == 1 || (textBox2.TextLength == 0 && checkFirstEmpt == true))
+                        {
+                            textBox3.AppendText(Convert.ToString(lonNumbers[i][0]));
+                            textBox3.AppendText(",");
+                            break;
+                        }
+
+                        //Проверяем пусто или нет (первая цифра в частоте)
+                        if (lonNumbers[i][0] != 100)
+                        {
+                            textBox3.AppendText(Convert.ToString(lonNumbers[i][0]));
+                            break;
+                        }
+                        else
+                        {
+                            checkFirstEmpt = true;
+                            break;
+                        }
+
+                    }
+                }
+                i_start += step;
+                i_end += step;
+            }
+        }
+
+
 
 
         private void Form1_Load(object sender, EventArgs e)
@@ -661,6 +945,16 @@ namespace Approksimaciya_graphikov
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
         {
 
         }
