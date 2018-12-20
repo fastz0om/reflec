@@ -38,10 +38,15 @@ namespace Approksimaciya_graphikov
         //Количество графиков, которое будет помещаться в одну строку монитора
         private int _nubmerOfGrapf;
         private List<Point> _tempLocationGrapf = new List<Point>();
-        //Лист пиксельных значений цифр
-        private List<long[]> lonNumbers = new List<long[]>();
-        //Лист пиксельных значений подгруженной цифры
-        long[] tempNumber;
+        //Лист пиксельных значений цифр частоты
+        private List<long[]> _lonNumbersFrequancy = new List<long[]>();
+        //Лист пиксельных значений подгруженной цифры частоты
+        long[] _tempNumberFrequancy;
+        //Лист пиксельных значений цифр амплитуды
+        private List<long[]> _lonNumbersAmplitude = new List<long[]>();
+        //Лист пиксельных значений подгруженной цифры амплитуды
+        long[] _tempNumberAmplitude;
+
 
 
         protected override void OnPaint(PaintEventArgs e)
@@ -118,6 +123,7 @@ namespace Approksimaciya_graphikov
         {
             textBox2.Clear();
             textBox3.Clear();
+            textBox4.Clear();
             // диалог для выбора файла
             OpenFileDialog ofd = new OpenFileDialog();
             // фильтр форматов файлов
@@ -136,11 +142,17 @@ namespace Approksimaciya_graphikov
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            // loadGrapf();
+            loadGrapf();
             loadingFromFileNumbers();
-            loadNumbers();
+            //  loadNumbersFrequancyAndAmplitude();
 
-
+            Bitmap input1 = new Bitmap(pictureBox1.Image);
+            if (frequencyCheck(input1))
+            {
+                writeFrequancyToTextBox(input1, 548, 557, textBox2);
+                writeFrequancyToTextBox(input1, 565, 574, textBox3);
+            }
+            writeAmplitudeToTextBox(input1);
         }
 
 
@@ -174,48 +186,55 @@ namespace Approksimaciya_graphikov
                     }
                 // выводим черно-белый Bitmap в pictureBox2
                 pictureBox2.Image = output;
-                //textBox1.Text = ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x00FF0000)/256/256).ToString() + " " + ((UInt32)((input.GetPixel(500, 500).ToArgb()) & 0x0000FF00)/256).ToString() + " " + ((UInt32)(input.GetPixel(500, 500).ToArgb()) & 0x000000FF).ToString();
-            }
-            //    textBox1.Clear();
+            }          
         }
 
 
-        private void loadNumbers()
+        private void loadNumbersFrequancyAndAmplitude()
         {
-
             ///ВЫрезаем цифру -->
             if (pictureBox1.Image != null) // если изображение в pictureBox1 имеется
             {
                 Bitmap input = new Bitmap(pictureBox1.Image);
+
                 // Начальная частота            
                 //     int j_start = 548, i_start = 69, j_end = 557, i_end = 76;  
+
                 // Конечная частота
                 //     int j_start = 565, i_start = 69, j_end = 574, i_end = 76;    
+
                 //Буква t, чтобы понять, что там есть частота
                 // int j_start = 548, i_start = 48, j_end = 557, i_end = 55;
+
                 //100 - это пустота, означает что 4 цифры
+
                 //101 - это буква t, означает что это правильная рефлектограмма и дальше будут цифры, иначе вводи цифры руками.
 
+                //Ампилитуда начальное              
+                // int j_start = 447, i_start = 623, j_end = 454, i_end = 630;  //шаг между цифрами 1, ДлинаXШирина=7x7
+
+                //НЕ УДАЛЯТЬ КОД ОН НУЖЕН, ЧТОБЫ ПОДГРУЖАТЬ ЦИФРЫ И ПРОЧЕЕ ГОВНО!!!!!!!
+                //   int j_start = 447, i_start = 631, j_end = 454, i_end = 638;
                 //    Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
                 //    for (int j = j_start; j < j_end; j++)
                 //        for (int i = i_start; i < i_end; i++)
-                //        {
-                //            UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
-                //             output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
-                //       }
+                //      {
+                //         UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
+                //           output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
+                //      }
                 //
-                //   bitNumbers.Add(output);
-                // pictureBox2.Image = output;
+                //     bitNumbers.Add(output);
+                //     pictureBox2.Image = output;
 
-                //запись цифры в файл
-                //   writeToFileNumbers(output, "2");
-
+                // Запись цифр в файл, если true - запись в файл с частотами, если false - запись в файл с амплитудами.
+                //    writeToFile(output, "7", false);
 
                 if (frequencyCheck(input))
                 {
-                    startFrequancy(input);
-                    stopFrequancy(input);
+                    writeFrequancyToTextBox(input, 548, 557, textBox2);
+                    writeFrequancyToTextBox(input, 565, 574, textBox3);
                 }
+                writeAmplitudeToTextBox(input);
             }
         }
 
@@ -646,8 +665,8 @@ namespace Approksimaciya_graphikov
 
         private void loadingFromFileNumbers()
         {
+            //!Примечание мозможно нужно вернуть в цикле Count-1
             List<string> text1 = new List<string>();
-            //   string text = "";
 
             using (StreamReader fs = new StreamReader(@"./dataNumbers.txt"))
             {
@@ -659,12 +678,10 @@ namespace Approksimaciya_graphikov
                     if (temp == null) break;
                     // Пишем считанную строку в итоговую переменную.
                     text1.Add(temp);
-                    //               text += temp;
                 }
             }
-
             //заполняем лист данными из файла и преобразуем это в массивы long
-            for (int i = 0; i < text1.Count - 1; i++)
+            for (int i = 0; i < text1.Count; i++)
             {
                 string[] str = text1[i].Split(' ');
                 long[] mas = new long[str.Length - 1];
@@ -673,13 +690,40 @@ namespace Approksimaciya_graphikov
                 {
                     mas[j] = Convert.ToInt64(str[j]);
                 }
-                lonNumbers.Add(mas);
+                _lonNumbersFrequancy.Add(mas);
+            }
+
+            text1.Clear();
+
+            using (StreamReader fs = new StreamReader(@"./dataNumbersAml.txt"))
+            {
+                while (true)
+                {
+                    // Читаем строку из файла во временную переменную.
+                    string temp = fs.ReadLine();
+                    // Если достигнут конец файла, прерываем считывание.
+                    if (temp == null) break;
+                    // Пишем считанную строку в итоговую переменную.
+                    text1.Add(temp);
+                }
+            }
+            //заполняем лист данными из файла и преобразуем это в массивы long
+            for (int i = 0; i < text1.Count; i++)
+            {
+                string[] str = text1[i].Split(' ');
+                long[] mas = new long[str.Length - 1];
+
+                for (int j = 0; j < str.Length - 1; j++)
+                {
+                    mas[j] = Convert.ToInt64(str[j]);
+                }
+                _lonNumbersAmplitude.Add(mas);
             }
         }
 
 
         //Заполнение массива long пикселями конкретной цифры (каждая цифра классифицируется отдельно)
-        private long[] arrayFill(Bitmap output)
+        private long[] arrayPixelCurrentNumber(Bitmap output)
         {
             List<long> tempListLong = new List<long>();
             for (int i = 0; i < output.Width; i++) //ширина
@@ -689,20 +733,29 @@ namespace Approksimaciya_graphikov
                     tempListLong.Add((UInt32)output.GetPixel(i, j).ToArgb());
                 }
             }
-            tempNumber = new long[tempListLong.Count];
+            long[] myTempMas = new long[tempListLong.Count];
 
             for (int i = 0; i < tempListLong.Count; i++)
             {
-                tempNumber[i] = tempListLong[i];
+                myTempMas[i] = tempListLong[i];
             }
-            return tempNumber;
+            return myTempMas;
         }
 
 
-        //Записывает данные о цифрах и прочем говне в файл,  необходимо передать картинку и название цифры или символа в форме числа
-        private void writeToFileNumbers(Bitmap output, string nameNumber)
+        //Записывает данные о цифрах частоты и прочем говне в файл,  необходимо передать картинку и номер цифры + информацию о файле
+        private void writeToFile(Bitmap output, string nameNumber, bool whichFile)
         {
-            using (StreamWriter sw = new StreamWriter("./dataNumbers.txt", true, System.Text.Encoding.Default))
+            string sOne = "./dataNumbers.txt";
+            string sTwo = "./dataNumbersAml.txt";
+            string tempPath;
+            if (whichFile)
+            {
+                tempPath = sOne;
+            }
+            else tempPath = sTwo;
+
+            using (StreamWriter sw = new StreamWriter(tempPath, true, System.Text.Encoding.Default))
             {
                 sw.Write(nameNumber);
                 sw.Write(" ");
@@ -714,6 +767,7 @@ namespace Approksimaciya_graphikov
                         sw.Write(" ");
                     }
                 }
+                sw.WriteLine();
             }
         }
 
@@ -728,34 +782,34 @@ namespace Approksimaciya_graphikov
                     UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
                     output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
                 }
-            arrayFill(output);
-            int[] sostoyanie = new int[lonNumbers.Count];  //Сколько похожих точек между парой графиков.              
-            for (int i = 0; i < lonNumbers.Count; i++)
+            //  arrayFill(output);
+            _tempNumberFrequancy = arrayPixelCurrentNumber(output);
+            int[] sostoyanie = new int[_lonNumbersFrequancy.Count];  //Сколько похожих точек между парой графиков.              
+            for (int i = 0; i < _lonNumbersFrequancy.Count; i++)
             {
                 sostoyanie[i] = 0;
-                for (int j = 0; j < tempNumber.Length; j++)
+                for (int j = 0; j < _tempNumberFrequancy.Length; j++)
                 {
-                    if (lonNumbers[i][j + 1] == tempNumber[j])
+                    if (_lonNumbersFrequancy[i][j + 1] == _tempNumberFrequancy[j])
                     {
                         sostoyanie[i]++;
                     }
                 }
-                if (sostoyanie[i] == tempNumber.Length)
+                if (sostoyanie[i] == _tempNumberFrequancy.Length)
                 {
                     return true;
-                    break;
                 }
 
             }
             return false;
         }
 
-        //Написание начальной частоты в текстовое поле
-        private void startFrequancy(Bitmap input)
+        //Написание  частот в текстовые поля
+        private void writeFrequancyToTextBox(Bitmap input, int j_start, int j_end, TextBox nameTextBox)
         {
-            bool checkFirstEmpt = false;
             int step = 9;
-            int j_start = 548, i_start = 69, j_end = 557, i_end = 76;
+            //      int j_start = 565, i_start = 69, j_end = 574, i_end = 76;
+            int i_start = 69, i_end = 76;
             for (int k = 0; k < 6; k++)
             {
                 Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
@@ -765,49 +819,28 @@ namespace Approksimaciya_graphikov
                         UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
                         output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
                     }
-
-                //   bitNumbers.Add(output);
-                // pictureBox2.Image = output;
-
-                //запись цифры в файл
-                //   writeToFileNumbers(output, "2");
-
                 //добавление данных о пикселях подгруженной цифры в массив long
-                arrayFill(output);
-
-                int[] sostoyanie = new int[lonNumbers.Count];  //Сколько похожих точек между парой графиков.              
-                for (int i = 0; i < lonNumbers.Count; i++)
+                //    arrayFill(output);
+                _tempNumberFrequancy = arrayPixelCurrentNumber(output);
+                int[] sostoyanie = new int[_lonNumbersFrequancy.Count];  //Сколько похожих точек между парой графиков.              
+                for (int i = 0; i < _lonNumbersFrequancy.Count; i++)
                 {
                     sostoyanie[i] = 0;
-                    for (int j = 0; j < tempNumber.Length; j++)
+                    for (int j = 0; j < _tempNumberFrequancy.Length; j++)
                     {
-                        if (lonNumbers[i][j + 1] == tempNumber[j])
+                        if (_lonNumbersFrequancy[i][j + 1] == _tempNumberFrequancy[j])
                         {
                             sostoyanie[i]++;
                         }
                     }
-                    if (sostoyanie[i] == tempNumber.Length)
+                    if (sostoyanie[i] == _tempNumberFrequancy.Length)
                     {
-                        //Ставим запятую
-                        if (textBox2.TextLength == 1 || (textBox2.TextLength == 0 && checkFirstEmpt == true))
-                        {
-                            textBox2.AppendText(Convert.ToString(lonNumbers[i][0]));
-                            textBox2.AppendText(",");
-                            break;
-                        }
-
                         //Проверяем пусто или нет (первая цифра в частоте)
-                        if (lonNumbers[i][0] != 100)
+                        if (_lonNumbersFrequancy[i][0] != 100)
                         {
-                            textBox2.AppendText(Convert.ToString(lonNumbers[i][0]));
+                            nameTextBox.AppendText(Convert.ToString(_lonNumbersFrequancy[i][0]));
                             break;
                         }
-                        else
-                        {
-                            checkFirstEmpt = true;
-                            break;
-                        }
-
                     }
                 }
                 i_start += step;
@@ -815,12 +848,12 @@ namespace Approksimaciya_graphikov
             }
         }
 
-        //Написание конечной частоты в текстовое поле
-        private void stopFrequancy(Bitmap input)
+
+        //Написание амплитуды в текстовое поле
+        private void writeAmplitudeToTextBox(Bitmap input)
         {
-            bool checkFirstEmpt = false;
-            int step = 9;
-            int j_start = 565, i_start = 69, j_end = 574, i_end = 76;
+            int step = 8;
+            int j_start = 447, i_start = 623, j_end = 454, i_end = 630;
             for (int k = 0; k < 6; k++)
             {
                 Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
@@ -830,52 +863,40 @@ namespace Approksimaciya_graphikov
                         UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
                         output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
                     }
-
                 //добавление данных о пикселях подгруженной цифры в массив long
-                arrayFill(output);
-
-                int[] sostoyanie = new int[lonNumbers.Count];  //Сколько похожих точек между парой графиков.              
-                for (int i = 0; i < lonNumbers.Count; i++)
+                //   arrayFillAmplitude(output);
+                _tempNumberAmplitude = arrayPixelCurrentNumber(output);
+                int[] sostoyanie = new int[_lonNumbersAmplitude.Count];  //Сколько похожих точек между парой графиков.              
+                for (int i = 0; i < _lonNumbersAmplitude.Count; i++)
                 {
                     sostoyanie[i] = 0;
-                    for (int j = 0; j < tempNumber.Length; j++)
+                    for (int j = 0; j < _tempNumberAmplitude.Length; j++)
                     {
-                        if (lonNumbers[i][j + 1] == tempNumber[j])
+                        if (_lonNumbersAmplitude[i][j + 1] == _tempNumberAmplitude[j])
                         {
                             sostoyanie[i]++;
                         }
                     }
-                    if (sostoyanie[i] == tempNumber.Length)
+                    if (sostoyanie[i] == _tempNumberAmplitude.Length)
                     {
                         //Ставим запятую
-                        if (textBox3.TextLength == 1 || (textBox2.TextLength == 0 && checkFirstEmpt == true))
+                        //   if (str.Length == 1)
+                        //     {
+                        //         str += Convert.ToString(_lonNumbersAmplitude[i][0]) + ",";
+                        //         break;
+                        //      }                      
+                        //     else
                         {
-                            textBox3.AppendText(Convert.ToString(lonNumbers[i][0]));
-                            textBox3.AppendText(",");
+                            textBox4.AppendText(Convert.ToString(_lonNumbersAmplitude[i][0]));
                             break;
                         }
-
-                        //Проверяем пусто или нет (первая цифра в частоте)
-                        if (lonNumbers[i][0] != 100)
-                        {
-                            textBox3.AppendText(Convert.ToString(lonNumbers[i][0]));
-                            break;
-                        }
-                        else
-                        {
-                            checkFirstEmpt = true;
-                            break;
-                        }
-
                     }
                 }
                 i_start += step;
                 i_end += step;
             }
+
         }
-
-
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -958,8 +979,5 @@ namespace Approksimaciya_graphikov
         {
 
         }
-
-
-
     }
 }
