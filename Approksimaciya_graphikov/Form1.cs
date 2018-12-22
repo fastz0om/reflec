@@ -32,6 +32,7 @@ namespace Approksimaciya_graphikov
         private int[,] _koordinaty_graphika_new = new int[250, 250];
         private int _temp = 0;
         private bool _firstStart = true;
+        private bool _isLoadNumber = true;
         //Разрешения монитора
         private int _heightMonitor;
         private int _widhtMonitor;
@@ -56,8 +57,13 @@ namespace Approksimaciya_graphikov
             if (_firstStart)
             {
                 createGrafics();
+                if (_isLoadNumber)
+                {
+                    loadingFromFileNumbers();
+                }
             }
             _firstStart = false;
+            _isLoadNumber = false;
         }
 
         private void createGrafics()
@@ -143,8 +149,8 @@ namespace Approksimaciya_graphikov
                 }
             }
             loadGrapf();
-            loadingFromFileNumbers();
-            //  loadNumbersFrequancyAndAmplitude();
+          //  loadingFromFileNumbers();
+            //   loadNumbersFrequancyAndAmplitude();
 
             Bitmap input1 = new Bitmap(pictureBox1.Image);
             if (frequencyCheck(input1))
@@ -186,7 +192,7 @@ namespace Approksimaciya_graphikov
                     }
                 // выводим черно-белый Bitmap в pictureBox2
                 pictureBox2.Image = output;
-            }          
+            }
         }
 
 
@@ -214,27 +220,27 @@ namespace Approksimaciya_graphikov
                 // int j_start = 447, i_start = 623, j_end = 454, i_end = 630;  //шаг между цифрами 1, ДлинаXШирина=7x7
 
                 //НЕ УДАЛЯТЬ КОД ОН НУЖЕН, ЧТОБЫ ПОДГРУЖАТЬ ЦИФРЫ И ПРОЧЕЕ ГОВНО!!!!!!!
-                //   int j_start = 447, i_start = 631, j_end = 454, i_end = 638;
+                //   int j_start = 447, i_start = 655, j_end = 454, i_end = 662;
                 //    Bitmap output = new Bitmap(i_end - i_start, j_end - j_start);
                 //    for (int j = j_start; j < j_end; j++)
                 //        for (int i = i_start; i < i_end; i++)
-                //      {
+                //       {
                 //         UInt32 pixel = (UInt32)(input.GetPixel(i, j).ToArgb());
-                //           output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
+                //            output.SetPixel(i - i_start, j - j_start, Color.FromArgb((int)pixel));
                 //      }
                 //
                 //     bitNumbers.Add(output);
                 //     pictureBox2.Image = output;
 
                 // Запись цифр в файл, если true - запись в файл с частотами, если false - запись в файл с амплитудами.
-                //    writeToFile(output, "7", false);
+                //     writeToFile(output, "7", false);
 
-                if (frequencyCheck(input))
-                {
-                    writeFrequancyToTextBox(input, 548, 557, textBox2);
-                    writeFrequancyToTextBox(input, 565, 574, textBox3);
-                }
-                writeAmplitudeToTextBox(input);
+                //    if (frequencyCheck(input))
+                //    {
+                //         writeFrequancyToTextBox(input, 548, 557, textBox2);
+                //         writeFrequancyToTextBox(input, 565, 574, textBox3);
+                //     }
+                //      writeAmplitudeToTextBox(input);
             }
         }
 
@@ -866,7 +872,7 @@ namespace Approksimaciya_graphikov
                 //добавление данных о пикселях подгруженной цифры в массив long
                 //   arrayFillAmplitude(output);
                 _tempNumberAmplitude = arrayPixelCurrentNumber(output);
-                int[] sostoyanie = new int[_lonNumbersAmplitude.Count];  //Сколько похожих точек между парой графиков.              
+                int[] sostoyanie = new int[_lonNumbersAmplitude.Count];  //Сколько одинаковых точек между парой цифр.              
                 for (int i = 0; i < _lonNumbersAmplitude.Count; i++)
                 {
                     sostoyanie[i] = 0;
@@ -877,15 +883,15 @@ namespace Approksimaciya_graphikov
                             sostoyanie[i]++;
                         }
                     }
-                    if (sostoyanie[i] == _tempNumberAmplitude.Length)
+                    if (sostoyanie[i] >= _tempNumberAmplitude.Length - 2)
                     {
-                        //Ставим запятую
-                        //   if (str.Length == 1)
-                        //     {
-                        //         str += Convert.ToString(_lonNumbersAmplitude[i][0]) + ",";
-                        //         break;
-                        //      }                      
-                        //     else
+                        // Ставим запятую
+                        if (textBox4.TextLength == 1)
+                        {
+                            textBox4.AppendText(Convert.ToString(_lonNumbersAmplitude[i][0]) + ",");
+                            break;
+                        }
+                        else
                         {
                             textBox4.AppendText(Convert.ToString(_lonNumbersAmplitude[i][0]));
                             break;
