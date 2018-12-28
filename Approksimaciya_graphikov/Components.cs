@@ -11,7 +11,7 @@ namespace Approksimaciya_graphikov
     {
         public List<double> coordinatesY;
         public List<double> coordinatesX;
-        private string info = "";
+        public string info = "";
 
         public void setCoordinates(double[] mas)
         {

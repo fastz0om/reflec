@@ -23,6 +23,7 @@ namespace Approksimaciya_graphikov
         }
 
         private Component _component;
+        String _nameOfFile = "";
         private Data _data = new Data();
         private List<Bitmap> bitNumbers = new List<Bitmap>();
         private List<Chart> _charts = new List<Chart>();
@@ -91,6 +92,7 @@ namespace Approksimaciya_graphikov
 
                 ChartArea chartArea = new ChartArea();
                 Chart myChart = new Chart();
+                
                 chartArea.Position = new ElementPosition(0, 0, 100, 100);
                 myChart.ChartAreas.Add(chartArea);
                 myChart.Location = startLocation;
@@ -98,12 +100,16 @@ namespace Approksimaciya_graphikov
                 myChart.Visible = true;
                 myChart.Parent = this;
                 myChart.CreateControl();
+                Axis ax = new Axis();
+                ax.Title = _data.data[i].info ;
+                myChart.ChartAreas[0].AxisX = ax;
                 _charts.Add(myChart);
                 myChart.Series.Add(new Series());
                 // myChart.Series[0].Points.Clear();
                 myChart.Series[0].Enabled = true;
                 myChart.Enabled = true;
                 panel1.Controls.Add(myChart);
+              
                 List<double> coordinatesY = new List<double>();
                 List<double> coordinatesX = new List<double>();
                 for (int j = 0; j < 250; j++)
@@ -139,6 +145,8 @@ namespace Approksimaciya_graphikov
             {
                 try
                 {
+                    String[] name = ofd.FileName.Split(new char[] {'\\'});
+                    this._nameOfFile = name[name.Length - 1].Split(new Char[] {'.'})[0];
                     // загружаем изображение
                     pictureBox1.Image = new Bitmap(ofd.FileName);
                 }
@@ -351,6 +359,7 @@ namespace Approksimaciya_graphikov
             }
             _component = new Component();
             _component.setCoordinates(frequencyCoordinates, _koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
+            _component.setInfo(this._nameOfFile);
 
             //  List<double> correlationCoef_Y = new List<double>();
             //  List<double> correlationCoef_X = new List<double>();
@@ -626,6 +635,19 @@ namespace Approksimaciya_graphikov
                     this._data.addComponent(_component); // Кнопка добавить
                 }
             }
+            if (chart1.Series[0].Points.ToArray().Length != 0)
+            {
+                if (_charts.Count == 0)
+                {
+                    this._data.addComponent(_component);
+                }
+            }
+            else
+            {
+                textBox1.Clear();
+                textBox1.Text = "Сначала аппроксимируйте график";
+            }
+            
 
             //////////
             BinaryFormatter formatter = new BinaryFormatter();
