@@ -133,6 +133,7 @@ namespace Approksimaciya_graphikov
 
         private void button1_Click(object sender, EventArgs e)
         {
+            textBox1.Clear();
             textBox2.Clear();
             textBox3.Clear();
             textBox4.Clear();
@@ -299,6 +300,7 @@ namespace Approksimaciya_graphikov
 
         private void button4_Click(object sender, EventArgs e) // Аппроксимировать
         {
+            textBox1.Clear();
             _temp = 0;
             chart1.Series[0].Points.Clear();
             _koordinaty_graphika = new double[250];
