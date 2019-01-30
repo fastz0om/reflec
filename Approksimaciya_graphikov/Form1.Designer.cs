@@ -101,6 +101,7 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 2;
             this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click_1);
             // 
             // button3
             // 
@@ -121,14 +122,16 @@
             this.textBox1.Location = new System.Drawing.Point(12, 328);
             this.textBox1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(647, 26);
+            this.textBox1.Size = new System.Drawing.Size(647, 30);
             this.textBox1.TabIndex = 5;
+            this.textBox1.Visible = false;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // button4
             // 
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button4.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button4.Location = new System.Drawing.Point(1059, 211);
+            this.button4.Location = new System.Drawing.Point(1038, 210);
             this.button4.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(166, 27);
@@ -139,12 +142,13 @@
             // 
             // chart1
             // 
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Alignment = System.Drawing.StringAlignment.Far;
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(663, 42);
+            this.chart1.Location = new System.Drawing.Point(665, 42);
             this.chart1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
@@ -161,7 +165,7 @@
             this.textBox10.Location = new System.Drawing.Point(147, 989);
             this.textBox10.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(100, 20);
+            this.textBox10.Size = new System.Drawing.Size(100, 23);
             this.textBox10.TabIndex = 28;
             this.textBox10.Visible = false;
             // 
@@ -170,7 +174,7 @@
             this.textBox11.Location = new System.Drawing.Point(375, 989);
             this.textBox11.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(100, 20);
+            this.textBox11.Size = new System.Drawing.Size(100, 23);
             this.textBox11.TabIndex = 29;
             this.textBox11.Visible = false;
             // 
@@ -179,7 +183,7 @@
             this.textBox12.Location = new System.Drawing.Point(619, 989);
             this.textBox12.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(100, 20);
+            this.textBox12.Size = new System.Drawing.Size(100, 23);
             this.textBox12.TabIndex = 30;
             this.textBox12.Visible = false;
             // 
@@ -188,7 +192,7 @@
             this.textBox13.Location = new System.Drawing.Point(861, 995);
             this.textBox13.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(100, 20);
+            this.textBox13.Size = new System.Drawing.Size(100, 23);
             this.textBox13.TabIndex = 31;
             this.textBox13.Visible = false;
             // 
@@ -257,7 +261,7 @@
             this.textBox27.Location = new System.Drawing.Point(1101, 995);
             this.textBox27.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox27.Name = "textBox27";
-            this.textBox27.Size = new System.Drawing.Size(100, 20);
+            this.textBox27.Size = new System.Drawing.Size(100, 23);
             this.textBox27.TabIndex = 46;
             this.textBox27.Visible = false;
             // 
@@ -278,14 +282,15 @@
             this.textBox35.Location = new System.Drawing.Point(1341, 995);
             this.textBox35.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.textBox35.Name = "textBox35";
-            this.textBox35.Size = new System.Drawing.Size(100, 20);
+            this.textBox35.Size = new System.Drawing.Size(100, 23);
             this.textBox35.TabIndex = 58;
             this.textBox35.Visible = false;
             // 
             // button5
             // 
+            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button5.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button5.Location = new System.Drawing.Point(1059, 245);
+            this.button5.Location = new System.Drawing.Point(1038, 245);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(166, 27);
             this.button5.TabIndex = 66;
@@ -320,30 +325,32 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(87, 26);
+            this.textBox2.Location = new System.Drawing.Point(114, 26);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(76, 20);
+            this.textBox2.Size = new System.Drawing.Size(76, 23);
             this.textBox2.TabIndex = 71;
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(86, 67);
+            this.textBox3.Location = new System.Drawing.Point(114, 66);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(76, 20);
+            this.textBox3.Size = new System.Drawing.Size(76, 23);
             this.textBox3.TabIndex = 72;
             this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(84, 103);
+            this.textBox4.Location = new System.Drawing.Point(114, 102);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(76, 20);
+            this.textBox4.Size = new System.Drawing.Size(76, 23);
             this.textBox4.TabIndex = 73;
             this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // panel2
             // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.AutoSize = true;
             this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label2);
@@ -351,9 +358,9 @@
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.textBox2);
             this.panel2.Controls.Add(this.textBox3);
-            this.panel2.Location = new System.Drawing.Point(1059, 69);
+            this.panel2.Location = new System.Drawing.Point(1038, 62);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(165, 131);
+            this.panel2.Size = new System.Drawing.Size(194, 131);
             this.panel2.TabIndex = 74;
             // 
             // label4
@@ -361,7 +368,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(45, 3);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(88, 16);
+            this.label4.Size = new System.Drawing.Size(110, 18);
             this.label4.TabIndex = 76;
             this.label4.Text = "Доп параметры";
             this.label4.Click += new System.EventHandler(this.label4_Click);
@@ -369,9 +376,9 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 107);
+            this.label3.Location = new System.Drawing.Point(30, 107);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 16);
+            this.label3.Size = new System.Drawing.Size(73, 18);
             this.label3.TabIndex = 75;
             this.label3.Text = "Amplitude";
             this.label3.Click += new System.EventHandler(this.label3_Click);
@@ -379,28 +386,29 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(-2, 69);
+            this.label2.Location = new System.Drawing.Point(5, 69);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(86, 16);
+            this.label2.Size = new System.Drawing.Size(107, 18);
             this.label2.TabIndex = 74;
             this.label2.Text = "Stop Frequency";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(-1, 27);
+            this.label1.Location = new System.Drawing.Point(3, 27);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 16);
+            this.label1.Size = new System.Drawing.Size(109, 18);
             this.label1.TabIndex = 73;
             this.label1.Text = "Start Frequency";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightCyan;
-            this.ClientSize = new System.Drawing.Size(1276, 533);
+            this.ClientSize = new System.Drawing.Size(1271, 538);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);

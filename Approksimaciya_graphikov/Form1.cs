@@ -74,7 +74,12 @@ namespace Approksimaciya_graphikov
             int graficsCount = (_data.data.Count);
             int shiftX = 0;
             int shiftY = 0;
-
+           // _widhtMonitor = this.Width;
+           // int shift = 20;
+           // this.chart1.Location = new System.Drawing.Point(_widhtMonitor - chart1.Width - shift+2, 42);
+            //this.panel2.Location = new System.Drawing.Point(_widhtMonitor - panel2.Width - shift, 69);
+           // this.button4.Location = new System.Drawing.Point(_widhtMonitor - button4.Width - shift, 211);
+           // this.button5.Location = new System.Drawing.Point(_widhtMonitor - button5.Width - shift, 245);
             _nubmerOfGrapf = _widhtMonitor / 300;
             panel1.Height = 2 * 190 + 10;
             panel1.Width = _nubmerOfGrapf * 310;
@@ -201,8 +206,10 @@ namespace Approksimaciya_graphikov
                     }
                 // выводим черно-белый Bitmap в pictureBox2
                 pictureBox2.Image = output;
+              
             }
         }
+   
 
 
         private void loadNumbersFrequancyAndAmplitude()
@@ -1006,6 +1013,11 @@ namespace Approksimaciya_graphikov
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox2_Click_1(object sender, EventArgs e)
         {
 
         }
