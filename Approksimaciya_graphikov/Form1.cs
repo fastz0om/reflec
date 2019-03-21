@@ -48,6 +48,8 @@ namespace Approksimaciya_graphikov
         private List<long[]> _lonNumbersAmplitude = new List<long[]>();
         //Лист пиксельных значений подгруженной цифры амплитуды
         long[] _tempNumberAmplitude;
+        // Проверяет был ли аппроксимирован подгруженный график
+        private bool isApproc = false;
 
 
 
@@ -177,6 +179,7 @@ namespace Approksimaciya_graphikov
                 writeFrequancyToTextBox(input1, 565, 574, textBox3);
             }
             writeAmplitudeToTextBox(input1);
+            isApproc = false;
         }
 
 
@@ -311,6 +314,7 @@ namespace Approksimaciya_graphikov
 
         private void button4_Click(object sender, EventArgs e) // Аппроксимировать
         {
+            isApproc = true;
             textBox1.Clear();
             _temp = 0;
             chart1.Series[0].Points.Clear();
@@ -625,60 +629,61 @@ namespace Approksimaciya_graphikov
 
             bool vo = false; //Такого массива нет  в коллекции.
             int[] sostoyanie = new int[_charts.Count];  //Сколько похожих точек между парой графиков.
-
-            for (int i = 0; i < _charts.Count; i++)
+            if (isApproc)
             {
-                sostoyanie[i] = 0;
-                for (int j = 0; j < _data.data[i].coordinatesY.Count; j++)
+                for (int i = 0; i < _charts.Count; i++)
                 {
-                    if (_data.data[i].coordinatesY[j] == (_component.coordinatesY[j]))
+                    sostoyanie[i] = 0;
+                    for (int j = 0; j < _data.data[i].coordinatesY.Count; j++)
                     {
-                        sostoyanie[i]++;
+                        if (_data.data[i].coordinatesY[j] == (_component.coordinatesY[j]))
+                        {
+                            sostoyanie[i]++;
+                        }
+                    }
+                    if (sostoyanie[i] > 240)
+                    {
+                        vo = true;
+                        textBox1.Clear();
+                        textBox1.Text = "Такой график уже добавлен в Базу!";
+                        MessageBox.Show("Такой график уже добавлен в Базу!");
+                        break;
+                    }
+                    else if (i == _charts.Count - 1)
+                    {
+                        this._data.addComponent(_component); // Кнопка добавить
                     }
                 }
-                if (sostoyanie[i] > 240)
+
+                if (chart1.Series[0].Points.ToArray().Length != 0)
                 {
-                    vo = true;
-                    textBox1.Clear();
-                    textBox1.Text = "Такой график уже добавлен в Базу!";
-                    break;
+                    if (_charts.Count == 0)
+                    {
+                        this._data.addComponent(_component);
+                    }
                 }
-                else if (i == _charts.Count - 1)
+
+                //////////
+                BinaryFormatter formatter = new BinaryFormatter();
+                using (FileStream fs = new FileStream("./data.dat", FileMode.OpenOrCreate))
                 {
-                    this._data.addComponent(_component); // Кнопка добавить
+                    formatter.Serialize(fs, this._data);
                 }
-            }
-            if (chart1.Series[0].Points.ToArray().Length != 0)
-            {
-                if (_charts.Count == 0)
-                {
-                    this._data.addComponent(_component);
-                }
+
+                _tempLocationGrapf.Clear();
+                _charts.Clear();
+                _chartsCoordinates_X.Clear();
+                _chartsCoordinates_Y.Clear();
+                comboBox1.Items.Clear();
+                panel1.Controls.Clear();
+                panel1.Refresh();
+                this._firstStart = true;
+                /////////////////
             }
             else
             {
-                textBox1.Clear();
-                textBox1.Text = "Сначала аппроксимируйте график";
                 MessageBox.Show("Сначала аппроксимируйте график!");
-            }
-
-
-            //////////
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (FileStream fs = new FileStream("./data.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, this._data);
-            }
-
-            _tempLocationGrapf.Clear();
-            _charts.Clear();
-            _chartsCoordinates_X.Clear();
-            _chartsCoordinates_Y.Clear();
-            comboBox1.Items.Clear();
-            panel1.Controls.Clear();
-            panel1.Refresh();
-            this._firstStart = true;
-            /////////////////
+            }   
         }
 
         private void button6_Click(object sender, EventArgs e) // Кнопка серилизовать
