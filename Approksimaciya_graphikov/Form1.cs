@@ -74,14 +74,14 @@ namespace Approksimaciya_graphikov
             int graficsCount = (_data.data.Count);
             int shiftX = 0;
             int shiftY = 0;
-           // _widhtMonitor = this.Width;
-           // int shift = 20;
-           // this.chart1.Location = new System.Drawing.Point(_widhtMonitor - chart1.Width - shift+2, 42);
+            // _widhtMonitor = this.Width;
+            // int shift = 20;
+            // this.chart1.Location = new System.Drawing.Point(_widhtMonitor - chart1.Width - shift+2, 42);
             //this.panel2.Location = new System.Drawing.Point(_widhtMonitor - panel2.Width - shift, 69);
-           // this.button4.Location = new System.Drawing.Point(_widhtMonitor - button4.Width - shift, 211);
-           // this.button5.Location = new System.Drawing.Point(_widhtMonitor - button5.Width - shift, 245);
+            // this.button4.Location = new System.Drawing.Point(_widhtMonitor - button4.Width - shift, 211);
+            // this.button5.Location = new System.Drawing.Point(_widhtMonitor - button5.Width - shift, 245);
             _nubmerOfGrapf = _widhtMonitor / 300;
-            panel1.Height = 2 * 190 + 10;
+            panel1.Height = _heightMonitor - 390;
             panel1.Width = _nubmerOfGrapf * 310;
 
             for (int i = 0; i < graficsCount; i++)
@@ -97,7 +97,7 @@ namespace Approksimaciya_graphikov
 
                 ChartArea chartArea = new ChartArea();
                 Chart myChart = new Chart();
-                
+
                 chartArea.Position = new ElementPosition(0, 0, 100, 100);
                 myChart.ChartAreas.Add(chartArea);
                 myChart.Location = startLocation;
@@ -106,15 +106,19 @@ namespace Approksimaciya_graphikov
                 myChart.Parent = this;
                 myChart.CreateControl();
                 Axis ax = new Axis();
-                ax.Title = _data.data[i].info ;
+                ax.Title = _data.data[i].info;
+
+                comboBox1.Items.Add(_data.data[i].info);
+
                 myChart.ChartAreas[0].AxisX = ax;
                 _charts.Add(myChart);
                 myChart.Series.Add(new Series());
                 // myChart.Series[0].Points.Clear();
                 myChart.Series[0].Enabled = true;
                 myChart.Enabled = true;
+                //  flowLayoutPanel1.Controls.Add(myChart);
                 panel1.Controls.Add(myChart);
-              
+
                 List<double> coordinatesY = new List<double>();
                 List<double> coordinatesX = new List<double>();
                 for (int j = 0; j < 250; j++)
@@ -151,8 +155,8 @@ namespace Approksimaciya_graphikov
             {
                 try
                 {
-                    String[] name = ofd.FileName.Split(new char[] {'\\'});
-                    this._nameOfFile = name[name.Length - 1].Split(new Char[] {'.'})[0];
+                    String[] name = ofd.FileName.Split(new char[] { '\\' });
+                    this._nameOfFile = name[name.Length - 1].Split(new Char[] { '.' })[0];
                     // загружаем изображение
                     pictureBox1.Image = new Bitmap(ofd.FileName);
                 }
@@ -163,7 +167,7 @@ namespace Approksimaciya_graphikov
                 }
             }
             loadGrapf();
-          //  loadingFromFileNumbers();
+            //  loadingFromFileNumbers();
             //   loadNumbersFrequancyAndAmplitude();
 
             Bitmap input1 = new Bitmap(pictureBox1.Image);
@@ -206,10 +210,10 @@ namespace Approksimaciya_graphikov
                     }
                 // выводим черно-белый Bitmap в pictureBox2
                 pictureBox2.Image = output;
-              
+
             }
         }
-   
+
 
 
         private void loadNumbersFrequancyAndAmplitude()
@@ -655,8 +659,9 @@ namespace Approksimaciya_graphikov
             {
                 textBox1.Clear();
                 textBox1.Text = "Сначала аппроксимируйте график";
+                MessageBox.Show("Сначала аппроксимируйте график!");
             }
-            
+
 
             //////////
             BinaryFormatter formatter = new BinaryFormatter();
@@ -664,10 +669,12 @@ namespace Approksimaciya_graphikov
             {
                 formatter.Serialize(fs, this._data);
             }
+
             _tempLocationGrapf.Clear();
             _charts.Clear();
             _chartsCoordinates_X.Clear();
             _chartsCoordinates_Y.Clear();
+            comboBox1.Items.Clear();
             panel1.Controls.Clear();
             panel1.Refresh();
             this._firstStart = true;
@@ -1018,6 +1025,66 @@ namespace Approksimaciya_graphikov
         }
 
         private void pictureBox2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            bool delGrahp = false;
+
+            if (!string.IsNullOrEmpty(comboBox1.Text))
+            {
+                for (int i = 0; i < _data.data.Count; i++)
+                {
+                    if (_data.data[i].info.Equals(comboBox1.SelectedItem.ToString()))
+                    {
+                        _data.data.Remove(_data.data[i]);
+                        delGrahp = true;
+                        break;
+                    }
+                }
+                if (delGrahp)
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    using (FileStream fs = new FileStream("./data.dat", FileMode.OpenOrCreate))
+                    {
+                        formatter.Serialize(fs, this._data);
+                    }
+
+                    _tempLocationGrapf.Clear();
+                    _charts.Clear();
+                    _chartsCoordinates_X.Clear();
+                    _chartsCoordinates_Y.Clear();
+                    panel1.Controls.Clear();
+                    panel1.Refresh();
+                    this._firstStart = true;
+
+                    comboBox1.Items.Clear();
+                    /////////////////
+                }
+                else
+                {
+                    MessageBox.Show("Такого графика нет в базе! Пожалуйста проверьте правильность указанного названия графика!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста введите названиe графика, который необходимо удалить!");
+            }
+
+
+
+
+
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void flowLayoutPanel1_Paint_1(object sender, PaintEventArgs e)
         {
 
         }
