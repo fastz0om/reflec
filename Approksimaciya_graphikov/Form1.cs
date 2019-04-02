@@ -433,9 +433,83 @@ namespace Approksimaciya_graphikov
             return _koordinaty_graphika;
         }
 
+
+        //Опредяляем есть ли прямые линии в подгруженном графике, если да, то заново пересчитываем координаты
+        private double[] checkLineGraph(Bitmap input, double[] _koordinaty_graphika, params int[] frequency)
+        {
+            double number = 0;
+            Dictionary<double, int> openWith = new Dictionary<double, int>();
+
+            for (int i = 0; i < _koordinaty_graphika.Length; i++)
+            {
+                if (!openWith.ContainsKey(_koordinaty_graphika[i]))
+                {
+                    openWith.Add(_koordinaty_graphika[i], 1);
+                }
+                else
+                {
+                    openWith[_koordinaty_graphika[i]] = openWith[_koordinaty_graphika[i]] + 1;
+                }
+            }
+
+            int temp = 0;
+            double maxKey = 0;
+
+            foreach (double d in openWith.Keys)
+            {
+                if (openWith[d] > temp)
+                {
+                    temp = openWith[d];
+                    number = d;
+                }
+                if (d > maxKey)
+                {
+                    maxKey = d;
+                }
+            }
+
+            if (temp > 50)
+            {
+                int step = 1;
+                if (frequency.Length != 0)
+                {
+                    step = (frequency[1] - frequency[0]) / 250;
+                }
+
+                for (int j = 0; j < input.Width; j++)
+                {
+                    for (int i = input.Height - 1; i > 0; i--)
+                    {
+                        // получаем (i, j) пиксель
+                        UInt32 pixel = (UInt32)(input.GetPixel(j, i).ToArgb());
+                        // получаем компоненты цветов пикселя
+                        float R = (float)((pixel & 0x00FF0000) >> 16); // красный
+                        float G = (float)((pixel & 0x0000FF00) >> 8); // зеленый
+                        float B = (float)(pixel & 0x000000FF); // синий
+
+                        if ((G == 0) && (_temp == 0) && (j % 10 != 0) && (input.Height - i) != number)
+                        // if ((G == 0) && (temp == 0))
+                        {
+                            _koordinaty_graphika[j] = input.Height - i;
+                            textBox1.Text = textBox1.Text + (_koordinaty_graphika[j]).ToString() + ' ';
+                            break;
+                        }
+                    }
+
+                    if ((j % 10 == 1) && (j > 10))
+                    {
+                        _koordinaty_graphika[j - 1] = (_koordinaty_graphika[j] + _koordinaty_graphika[j - 2]) / 2;
+                    }
+
+                }
+            }
+            return _koordinaty_graphika;
+        }
+
+
         private double[] grapfWhite(Bitmap input, double[] _koordinaty_graphika, params int[] frequency)
         {
-            //   double[] koordinaty_graphika_Y = new double[250];
+            //   double[] koordinaty_graphika_Y = new double[250];         
             int step = 1;
             if (frequency.Length != 0)
             {
@@ -462,7 +536,6 @@ namespace Approksimaciya_graphikov
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
                         break;
                     }
-
                 }
 
                 if ((j % 10 == 1) && (j > 10))
@@ -470,6 +543,9 @@ namespace Approksimaciya_graphikov
                     _koordinaty_graphika[j - 1] = (_koordinaty_graphika[j] + _koordinaty_graphika[j - 2]) / 2;
                 }
             }
+
+            checkLineGraph(input, _koordinaty_graphika, frequency);
+
             return _koordinaty_graphika;
         }
 
@@ -683,7 +759,7 @@ namespace Approksimaciya_graphikov
             else
             {
                 MessageBox.Show("Сначала аппроксимируйте график!");
-            }   
+            }
         }
 
         private void button6_Click(object sender, EventArgs e) // Кнопка серилизовать
