@@ -144,7 +144,6 @@ namespace Approksimaciya_graphikov
 
         private void button1_Click(object sender, EventArgs e)
         {
-            textBox1.Clear();
             textBox2.Clear();
             textBox3.Clear();
             textBox4.Clear();
@@ -315,7 +314,6 @@ namespace Approksimaciya_graphikov
         private void button4_Click(object sender, EventArgs e) // Аппроксимировать
         {
             isApproc = true;
-            textBox1.Clear();
             _temp = 0;
             chart1.Series[0].Points.Clear();
             _koordinaty_graphika = new double[250];
@@ -424,7 +422,6 @@ namespace Approksimaciya_graphikov
                         _temp = 1;
                         _koordinaty_graphika[j] = 140 - i;
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
-                        textBox1.Text = textBox1.Text + (_koordinaty_graphika[j]).ToString() + ' ';
                         break;
                     }
                 }
@@ -437,7 +434,7 @@ namespace Approksimaciya_graphikov
         //Опредяляем есть ли прямые линии в подгруженном графике, если да, то заново пересчитываем координаты
         private double[] checkLineGraph(Bitmap input, double[] _koordinaty_graphika, params int[] frequency)
         {
-            double number = 0;
+            //Словарь пара: значение по оси У:количество данных координат во всём графике
             Dictionary<double, int> openWith = new Dictionary<double, int>();
 
             for (int i = 0; i < _koordinaty_graphika.Length; i++)
@@ -452,8 +449,8 @@ namespace Approksimaciya_graphikov
                 }
             }
 
+            double number = 0;
             int temp = 0;
-            double maxKey = 0;
 
             foreach (double d in openWith.Keys)
             {
@@ -462,11 +459,17 @@ namespace Approksimaciya_graphikov
                     temp = openWith[d];
                     number = d;
                 }
-                if (d > maxKey)
-                {
-                    maxKey = d;
-                }
             }
+
+            ////Лист номеров координат, которые нужно заменить
+            //List<int> coordinateNumberList = new List<int>();
+            //for (int i = 0; i < _koordinaty_graphika.Length; i++)
+            //{
+            //    if (number.Equals(_koordinaty_graphika[i]))
+            //    {
+            //        coordinateNumberList.Add(i);
+            //    }
+            //}
 
             if (temp > 50)
             {
@@ -488,10 +491,8 @@ namespace Approksimaciya_graphikov
                         float B = (float)(pixel & 0x000000FF); // синий
 
                         if ((G == 0) && (_temp == 0) && (j % 10 != 0) && (input.Height - i) != number)
-                        // if ((G == 0) && (temp == 0))
                         {
                             _koordinaty_graphika[j] = input.Height - i;
-                            textBox1.Text = textBox1.Text + (_koordinaty_graphika[j]).ToString() + ' ';
                             break;
                         }
                     }
@@ -500,9 +501,20 @@ namespace Approksimaciya_graphikov
                     {
                         _koordinaty_graphika[j - 1] = (_koordinaty_graphika[j] + _koordinaty_graphika[j - 2]) / 2;
                     }
-
                 }
             }
+
+            ////Максимальная координата в массиве координат
+            //double maxValue = _koordinaty_graphika.Max<double>();
+
+            //for (int i = 0; i < _koordinaty_graphika.Length; i++)
+            //{
+            //    if (coordinateNumberList.Contains(i) && _koordinaty_graphika[i].Equals(maxValue))
+            //    {
+            //        _koordinaty_graphika[i] = number;
+            //    }
+            //}
+
             return _koordinaty_graphika;
         }
 
@@ -528,16 +540,12 @@ namespace Approksimaciya_graphikov
                     float B = (float)(pixel & 0x000000FF); // синий
 
                     if ((G == 0) && (_temp == 0) && (j % 10 != 0))
-                    // if ((G == 0) && (temp == 0))
                     {
                         _koordinaty_graphika[j] = input.Height - i;
-                        textBox1.Text = textBox1.Text + (_koordinaty_graphika[j]).ToString() + ' ';
-                        //  koordinaty_graphika[j] = i;
                         //chart1.Series[0].Points.AddXY(j, koordinaty_graphika[j]);
                         break;
                     }
                 }
-
                 if ((j % 10 == 1) && (j > 10))
                 {
                     _koordinaty_graphika[j - 1] = (_koordinaty_graphika[j] + _koordinaty_graphika[j - 2]) / 2;
@@ -720,8 +728,6 @@ namespace Approksimaciya_graphikov
                     if (sostoyanie[i] > 240)
                     {
                         vo = true;
-                        textBox1.Clear();
-                        textBox1.Text = "Такой график уже добавлен в Базу!";
                         MessageBox.Show("Такой график уже добавлен в Базу!");
                         break;
                     }
