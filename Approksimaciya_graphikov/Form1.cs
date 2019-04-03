@@ -1036,47 +1036,7 @@ namespace Approksimaciya_graphikov
 
         }
 
-        private void Form1_Close(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void chart15_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void chart2_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-
-        }
-
-        private void toolTip1_Popup(object sender, PopupEventArgs e)
-        {
-
-        }
-
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void toolTip1_Popup_1(object sender, PopupEventArgs e)
-        {
-
-        }
-
-        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
 
         }
@@ -1150,28 +1110,18 @@ namespace Approksimaciya_graphikov
                     comboBox1.Items.Clear();
                     /////////////////
                 }
-                else
-                {
-                    MessageBox.Show("Такого графика нет в базе! Пожалуйста проверьте правильность указанного названия графика!");
-                }
+                //else
+                //{
+                //    MessageBox.Show("Такого графика нет в базе! Пожалуйста проверьте правильность указанного названия графика!");
+                //}
             }
             else
             {
-                MessageBox.Show("Пожалуйста введите названиe графика, который необходимо удалить!");
+                MessageBox.Show("Пожалуйста выберите график, который необходимо удалить!");
             }
-
-
-
-
-
         }
 
-        private void textBox5_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void flowLayoutPanel1_Paint_1(object sender, PaintEventArgs e)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
