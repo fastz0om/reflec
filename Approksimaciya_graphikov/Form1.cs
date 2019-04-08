@@ -318,85 +318,96 @@ namespace Approksimaciya_graphikov
             chart1.Series[0].Points.Clear();
             _koordinaty_graphika = new double[250];
 
-            Bitmap input = new Bitmap(pictureBox2.Image);
-            bool isBlack = false;
-            // получаем (свободный пиксель, чтобы определить цвет фона графика
-            UInt32 pixel = (UInt32)(input.GetPixel(1, input.Height - 1).ToArgb());
-            float G = (float)((pixel & 0x0000FF00) >> 8); // зеленый  
-
-            //Перелистывает скролл в начальное положение (необходимо, чтобы в панели графики располагались с начала координат, а не с середины)
-            panel1.VerticalScroll.Value = panel1.VerticalScroll.Minimum;
-
-            //если цвет свободного пикселя чёрный, то G=0, иначе G=255
-            if (G == 0)
+            try
             {
-                isBlack = true;
-            }
+                Bitmap input = new Bitmap(pictureBox2.Image);
+                bool isBlack = false;
+                // получаем (свободный пиксель, чтобы определить цвет фона графика
+                UInt32 pixel = (UInt32)(input.GetPixel(1, input.Height - 1).ToArgb());
+                float G = (float)((pixel & 0x0000FF00) >> 8); // зеленый  
 
-            //Проверка: чёрный или нет? (см. методы ниже, рядом с поиском кореляции)
-            if (isBlack)
-            {
-                grapfBlack(input, _koordinaty_graphika);
-            }
-            else grapfWhite(input, _koordinaty_graphika);
+                //Перелистывает скролл в начальное положение (необходимо, чтобы в панели графики располагались с начала координат, а не с середины)
+                panel1.VerticalScroll.Value = panel1.VerticalScroll.Minimum;
 
-            ///// Тут начинается логика
-            _koordinaty_graphika[0] = _koordinaty_graphika[1];
-            double stepY = 1;
-            double max = 0;
-            for (int i = 0; i < _koordinaty_graphika.Length; i++)
-            {
-
-                if (i > 10 && _koordinaty_graphika[i] > max)
-                    max = _koordinaty_graphika[i];
-            }
-
-            if (!textBox4.Text.Equals(""))
-            {
-                stepY = Convert.ToDouble(textBox4.Text) / max;
-            }
-
-            double[] frequencyCoordinates = new double[250];
-
-            for (int i = 0; i < input.Width; i++)
-            {
-                int stepX = 1;
-                if (!textBox3.Text.Equals("") && !textBox2.Text.Equals(""))
+                //если цвет свободного пикселя чёрный, то G=0, иначе G=255
+                if (G == 0)
                 {
-                    stepX = (Convert.ToInt32(textBox3.Text) - Convert.ToInt32(textBox2.Text)) / 250;
+                    isBlack = true;
                 }
 
-                //koordinaty_graphika[i] = koordinaty_graphika[i] - koordinaty_graphika_average;
-                _koordinaty_graphika[i] = _koordinaty_graphika[i] * stepY;
-                chart1.Series[0].Points.AddXY(i * stepX, _koordinaty_graphika[i]);
-                frequencyCoordinates[i] = i * stepX;
+                //Проверка: чёрный или нет? (см. методы ниже, рядом с поиском кореляции)
+                if (isBlack)
+                {
+                    grapfBlack(input, _koordinaty_graphika);
+                }
+                else grapfWhite(input, _koordinaty_graphika);
 
+                ///// Тут начинается логика
+                _koordinaty_graphika[0] = _koordinaty_graphika[1];
+                double stepY = 1;
+                double max = 0;
+                for (int i = 0; i < _koordinaty_graphika.Length; i++)
+                {
+
+                    if (i > 10 && _koordinaty_graphika[i] > max)
+                        max = _koordinaty_graphika[i];
+                }
+
+                if (!textBox4.Text.Equals(""))
+                {
+                    stepY = Convert.ToDouble(textBox4.Text) / max;
+                }
+
+                double[] frequencyCoordinates = new double[250];
+
+                for (int i = 0; i < input.Width; i++)
+                {
+                    int stepX = 1;
+                    if (!textBox3.Text.Equals("") && !textBox2.Text.Equals(""))
+                    {
+                        stepX = (Convert.ToInt32(textBox3.Text) - Convert.ToInt32(textBox2.Text)) / 250;
+                    }
+
+                    //koordinaty_graphika[i] = koordinaty_graphika[i] - koordinaty_graphika_average;
+                    _koordinaty_graphika[i] = _koordinaty_graphika[i] * stepY;
+                    chart1.Series[0].Points.AddXY(i * stepX, _koordinaty_graphika[i]);
+                    frequencyCoordinates[i] = i * stepX;
+
+                }
+                _component = new Component();
+                _component.setCoordinates(frequencyCoordinates, _koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
+                _component.setInfo(this._nameOfFile);
+
+                //  List<double> correlationCoef_Y = new List<double>();
+                //  List<double> correlationCoef_X = new List<double>();
+
+                List<double> rPirsonCorel_Y = new List<double>();
+                List<double> rPirsonCorel_X = new List<double>();
+
+
+                for (int i = 0; i < _charts.Count; i++)
+                {
+                    rPirsonCorel_Y.Add(rPirson(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
+                    rPirsonCorel_X.Add(rPirson(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
+                }
+                //      List<double> correlationCoefAverage = new List<double>();
+                //
+                //      for (int i = 0; i < rPirsonCorel_Y.Count; i++)
+                //      {
+                //          correlationCoefAverage.Add(rPirsonCorel_Y[i]);
+                //      }
+
+                //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
+                coloringGraphs(rPirsonCorel_Y);
             }
-            _component = new Component();
-            _component.setCoordinates(frequencyCoordinates, _koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
-            _component.setInfo(this._nameOfFile);
-
-            //  List<double> correlationCoef_Y = new List<double>();
-            //  List<double> correlationCoef_X = new List<double>();
-
-            List<double> rPirsonCorel_Y = new List<double>();
-            List<double> rPirsonCorel_X = new List<double>();
-
-
-            for (int i = 0; i < _charts.Count; i++)
+            catch
             {
-                rPirsonCorel_Y.Add(rPirson(_koordinaty_graphika, _chartsCoordinates_Y[i].ToArray()));
-                rPirsonCorel_X.Add(rPirson(frequencyCoordinates, _chartsCoordinates_X[i].ToArray()));
+                {
+                    MessageBox.Show("Пожалуйста, подгрузите необходимый шаблон рефлектограммы!", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            //      List<double> correlationCoefAverage = new List<double>();
-            //
-            //      for (int i = 0; i < rPirsonCorel_Y.Count; i++)
-            //      {
-            //          correlationCoefAverage.Add(rPirsonCorel_Y[i]);
-            //      }
 
-            //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
-            coloringGraphs(rPirsonCorel_Y);
         }
 
         private void chart1_Click(object sender, EventArgs e)
@@ -728,7 +739,8 @@ namespace Approksimaciya_graphikov
                     if (sostoyanie[i] > 240)
                     {
                         vo = true;
-                        MessageBox.Show("Такой график уже добавлен в Базу!");
+                        MessageBox.Show("Такой график уже добавлен в Базу!", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     }
                     else if (i == _charts.Count - 1)
@@ -764,7 +776,8 @@ namespace Approksimaciya_graphikov
             }
             else
             {
-                MessageBox.Show("Сначала аппроксимируйте график!");
+                MessageBox.Show("Сначала аппроксимируйте график!", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1117,7 +1130,8 @@ namespace Approksimaciya_graphikov
             }
             else
             {
-                MessageBox.Show("Пожалуйста выберите график, который необходимо удалить!");
+                MessageBox.Show("Пожалуйста выберите график, который необходимо удалить!","Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
