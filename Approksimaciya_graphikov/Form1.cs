@@ -50,7 +50,8 @@ namespace Approksimaciya_graphikov
         long[] _tempNumberAmplitude;
         // Проверяет был ли аппроксимирован подгруженный график
         private bool isApproc = false;
-
+        //Отмечен ли CheckBox - на модифицированность графика?
+        private bool checkModified = false;
 
 
         protected override void OnPaint(PaintEventArgs e)
@@ -88,6 +89,7 @@ namespace Approksimaciya_graphikov
 
             for (int i = 0; i < graficsCount; i++)
             {
+
                 if (i % _nubmerOfGrapf == 0 && i != 0)
                 {
                     shiftX += 190;
@@ -115,12 +117,13 @@ namespace Approksimaciya_graphikov
                 myChart.ChartAreas[0].AxisX = ax;
                 _charts.Add(myChart);
                 myChart.Series.Add(new Series());
-                // myChart.Series[0].Points.Clear();
+
                 myChart.Series[0].Enabled = true;
                 myChart.Enabled = true;
-                //  flowLayoutPanel1.Controls.Add(myChart);
-                panel1.Controls.Add(myChart);
 
+                toolTip1.SetToolTip(myChart, _data.data[i].getCurrentModValue());
+
+                panel1.Controls.Add(myChart);
                 List<double> coordinatesY = new List<double>();
                 List<double> coordinatesX = new List<double>();
                 for (int j = 0; j < 250; j++)
@@ -215,8 +218,6 @@ namespace Approksimaciya_graphikov
 
             }
         }
-
-
 
         private void loadNumbersFrequancyAndAmplitude()
         {
@@ -378,6 +379,9 @@ namespace Approksimaciya_graphikov
                 _component.setCoordinates(frequencyCoordinates, _koordinaty_graphika); // Запоминаем график для дальнейшей сериализации
                 _component.setInfo(this._nameOfFile);
 
+                //Заполнение частот и амплитуды в параметры компонента.
+                checkTextBoxs();
+
                 //  List<double> correlationCoef_Y = new List<double>();
                 //  List<double> correlationCoef_X = new List<double>();
 
@@ -398,6 +402,7 @@ namespace Approksimaciya_graphikov
                 //      }
 
                 //Метод который красит графики и располагает их в порядке уменьшения кореляции (см. ниже)
+                temperatureT(rPirsonCorel_Y);
                 coloringGraphs(rPirsonCorel_Y);
             }
             catch
@@ -634,35 +639,35 @@ namespace Approksimaciya_graphikov
         }
 
 
-        private double findCorrelation(double[] x, double[] y)
-        {
-            double xAverage = 0;
-            for (int i = 0; i < x.Length; i++)
-            {
-                xAverage += x[i];
-            }
-            xAverage = xAverage / x.Length;
-            double yAverage = 0;
-            for (int i = 0; i < y.Length; i++)
-            {
-                yAverage += y[i];
-            }
-            yAverage = yAverage / y.Length;
-            double correlationNumerator = 0;
-            for (int i = 0; i < x.Length; i++)
-            {
-                correlationNumerator += (x[i] - xAverage) * (y[i] - yAverage);
-            }
-            double correlationDenominator = 0;
-            for (int i = 0; i < x.Length; i++)
-            {
-                correlationDenominator += (Math.Pow(x[i] - xAverage, 2)) * (Math.Pow(y[i] - yAverage, 2));
-            }
-            correlationDenominator = Math.Sqrt(correlationDenominator);
-            double correlation = correlationNumerator / correlationDenominator;
-            //   return correlation;
-            return correlationNumerator;
-        }
+        //private double findCorrelation(double[] x, double[] y)
+        //{
+        //    double xAverage = 0;
+        //    for (int i = 0; i < x.Length; i++)
+        //    {
+        //        xAverage += x[i];
+        //    }
+        //    xAverage = xAverage / x.Length;
+        //    double yAverage = 0;
+        //    for (int i = 0; i < y.Length; i++)
+        //    {
+        //        yAverage += y[i];
+        //    }
+        //    yAverage = yAverage / y.Length;
+        //    double correlationNumerator = 0;
+        //    for (int i = 0; i < x.Length; i++)
+        //    {
+        //        correlationNumerator += (x[i] - xAverage) * (y[i] - yAverage);
+        //    }
+        //    double correlationDenominator = 0;
+        //    for (int i = 0; i < x.Length; i++)
+        //    {
+        //        correlationDenominator += (Math.Pow(x[i] - xAverage, 2)) * (Math.Pow(y[i] - yAverage, 2));
+        //    }
+        //    correlationDenominator = Math.Sqrt(correlationDenominator);
+        //    double correlation = correlationNumerator / correlationDenominator;
+        //    //   return correlation;
+        //    return correlationNumerator;
+        //}
 
         private void coloringGraphs(List<double> correlationCoefY)
         {
@@ -721,7 +726,6 @@ namespace Approksimaciya_graphikov
 
         private void button5_Click(object sender, EventArgs e)
         {
-
             bool vo = false; //Такого массива нет  в коллекции.
             int[] sostoyanie = new int[_charts.Count];  //Сколько похожих точек между парой графиков.
             if (isApproc)
@@ -745,7 +749,16 @@ namespace Approksimaciya_graphikov
                     }
                     else if (i == _charts.Count - 1)
                     {
+                        if (checkModified)
+                        {
+                            _component.setModified(true);
+                        }
+                        else
+                        {
+                            _component.setModified(false);
+                        }
                         this._data.addComponent(_component); // Кнопка добавить
+
                     }
                 }
 
@@ -756,7 +769,6 @@ namespace Approksimaciya_graphikov
                         this._data.addComponent(_component);
                     }
                 }
-
                 //////////
                 BinaryFormatter formatter = new BinaryFormatter();
                 using (FileStream fs = new FileStream("./data.dat", FileMode.OpenOrCreate))
@@ -769,8 +781,10 @@ namespace Approksimaciya_graphikov
                 _chartsCoordinates_X.Clear();
                 _chartsCoordinates_Y.Clear();
                 comboBox1.Items.Clear();
+
                 panel1.Controls.Clear();
                 panel1.Refresh();
+
                 this._firstStart = true;
                 /////////////////
             }
@@ -1116,8 +1130,10 @@ namespace Approksimaciya_graphikov
                     _charts.Clear();
                     _chartsCoordinates_X.Clear();
                     _chartsCoordinates_Y.Clear();
+
                     panel1.Controls.Clear();
                     panel1.Refresh();
+
                     this._firstStart = true;
 
                     comboBox1.Items.Clear();
@@ -1130,7 +1146,7 @@ namespace Approksimaciya_graphikov
             }
             else
             {
-                MessageBox.Show("Пожалуйста выберите график, который необходимо удалить!","Ошибка",
+                MessageBox.Show("Пожалуйста выберите график, который необходимо удалить!", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1139,5 +1155,53 @@ namespace Approksimaciya_graphikov
         {
 
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                checkModified = true;
+            }
+            else checkModified = false;
+        }
+
+
+        private void checkTextBoxs()
+        {
+            double temp = 0;
+
+            if (textBox2.Text != null && textBox2.Text != " " && textBox2.Text != "")
+            {
+                temp = double.Parse(textBox2.Text);
+                _component.setStartFreq(temp);
+            }
+
+            if (textBox3.Text != null && textBox3.Text != " " && textBox3.Text != "")
+            {
+                temp = double.Parse(textBox3.Text);
+                _component.setStopFreq(temp);
+            }
+
+            if (textBox4.Text != null && textBox4.Text != " " && textBox4.Text != "")
+            {
+                temp = double.Parse(textBox4.Text);
+                _component.setAmplitude(temp);
+            }
+            if (textBox2.Text != null && textBox2.Text != " " && textBox2.Text != "" && textBox3.Text != null && textBox3.Text != " " && textBox3.Text != "")
+            {
+                _component.freqSweep();
+            }
+        }
+
+        private void temperatureT(List<double> rPirsonCorel_Y)
+        {
+            int i = rPirsonCorel_Y.IndexOf(rPirsonCorel_Y.Max());
+            double T = (_component.getFreqSweep() - _data.data[i].getFreqSweep()) / 130;
+            textBox1.Text = T.ToString();
+ 
+        }
+
+
+
     }
 }
